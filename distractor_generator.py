@@ -31,7 +31,8 @@ class DistractorGenerator(GenerationPipeline):
         generated_result = this._generate(input_ids=input_ids,
                                           attention_mask=attention_mask)
         decoded = this._decode(generated_result, **kwargs)
-        print(decoded)
+
+        return decoded
     def _prep_distractor_inputs(this,
                                 question: str,
                                 context: str,
@@ -57,7 +58,6 @@ class DistractorGenerator(GenerationPipeline):
             truncation=True,
             return_tensors="pt"
         )
-
         return encoded["input_ids"], encoded["attention_mask"]
 """
 
