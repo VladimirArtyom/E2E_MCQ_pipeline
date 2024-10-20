@@ -1,6 +1,5 @@
 from helpers import E2E_TOKEN
 from typing import List, Tuple
-from rake_nltk import Rake
 from transformers import pipeline
 from torch import Tensor
 import spacy
@@ -14,8 +13,6 @@ class QuestionGenerator(GenerationPipeline):
                  answer_token: str,
                  context_token: str,
                  max_length: int,
-                 max_sentence_to_split: int,
-                 stopwords: List[str],
                  device: str):
         super().__init__(
 
@@ -31,9 +28,8 @@ class QuestionGenerator(GenerationPipeline):
         ## Deprecated
         this.regex_pattern = r'\b(?:tahun|ketinggian|populasi|panjang|luas)\s+(\d+[\.,]?\d*)\s*(?:km|meter|m|tahun|jiwa|persegi)?'
         this.spacy_nlp = spacy.load("xx_sent_ud_sm")
-        this.rake = Rake(stopwords=stopwords, language="indonesian", min_length=1, max_length=5)
 
-    def __call__(this, context: str, answer: str, **kwargs_qg):
+    def __call__(this, context: str, answer: str, **kwargs):
         prep_input = this._prepare_qag_inputs(context, answer)
         input_ids, attention_mask = this._encode_qg_input(prep_input)
         qg_output = this._generate(input_ids=input_ids, attention_mask=attention_mask)

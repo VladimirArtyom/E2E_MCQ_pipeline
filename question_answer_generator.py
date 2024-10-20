@@ -10,11 +10,10 @@ class QuestionAnswerGenerator(GenerationPipeline):
                  max_length: int,
                  context_token: str,
                  device: str,
+                 **kwargs
                  ):
-        this.model = model
-        this.tokenizer = tokenizer
+        super().__init__(model, tokenizer, device, **kwargs)
         this.max_length = max_length
-
         this.context_token = context_token
         this.device = device
 
