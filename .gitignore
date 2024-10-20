@@ -1,1 +1,11 @@
 sat.py
+sat_2.py
+lightning_to_oldschool.py
+BERT_NER_extractor.py
+model_thesis/
+model-distractors_1/
+model-distractors_all/
+model-distractors_all_small/
+QAG_t5_base/
+*.ipynb
+regex.py
