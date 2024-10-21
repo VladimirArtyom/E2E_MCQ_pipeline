@@ -29,8 +29,8 @@ class DistractorGenerator(GenerationPipeline):
                                                    context=context,
                                                    answer=answer)
         generated_result = this._generate(input_ids=input_ids,
-                                          attention_mask=attention_mask)
-        decoded = this._decode(generated_result, **kwargs)
+                                          attention_mask=attention_mask, **kwargs)
+        decoded = this._decode(generated_result)
 
         return decoded
     def _prep_distractor_inputs(this,

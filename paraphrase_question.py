@@ -8,8 +8,8 @@ class ParaphraseQuestion(GenerationPipeline):
     def __init__(this, 
                  model: T5ForConditionalGeneration,
                  tokenizer: T5Tokenizer,
-                 device: str,
                  max_length: int,
+                 device: str,
             ):
         super().__init__(model=model, tokenizer=tokenizer, device=device)
         this.max_length = max_length
