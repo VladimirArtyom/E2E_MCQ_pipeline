@@ -113,7 +113,7 @@ if __name__ == "__main__":
     args: Namespace = parse_args()
     config = OmegaConf.load("config.yaml")
 
-    model = T5ForConditionalGeneration.from_pretrained(args.model, use_auth_token=config.h_token)
+    model = T5ForConditionalGeneration.from_pretrained(args.model, use_auth_token=config.h_token).to(args.device)
     tokenizer = AutoTokenizer.from_pretrained(args.model, use_auth_token=config.h_token)
     data = datasets.load_dataset(args.file_path)
     val = pd.DataFrame(data["validation"])
