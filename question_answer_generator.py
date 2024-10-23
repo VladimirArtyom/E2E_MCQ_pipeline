@@ -21,8 +21,10 @@ class QuestionAnswerGenerator(GenerationPipeline):
         prepared_input = this.prep_input(context)
         input_ids, attention_mask = this._encode(prepared_input)
         output =this._generate(input_ids=input_ids,
-                       attention_mask=attention_mask)
-        return this._decode(output, **kwargs)
+                       attention_mask=attention_mask, 
+                       **kwargs
+                       )
+        return this._decode(output )
     
     def prep_input(this, context: str) -> str:
         inp_text = "{} {}".format(this.context_token, context)

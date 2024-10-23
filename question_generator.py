@@ -32,7 +32,7 @@ class QuestionGenerator(GenerationPipeline):
     def __call__(this, context: str, answer: str, **kwargs):
         prep_input = this._prepare_qag_inputs(context, answer)
         input_ids, attention_mask = this._encode_qg_input(prep_input)
-        qg_output = this._generate(input_ids=input_ids, attention_mask=attention_mask)
+        qg_output = this._generate(input_ids=input_ids, attention_mask=attention_mask, **kwargs)
         generated_question = this._decode(qg_output)
         return generated_question
 
