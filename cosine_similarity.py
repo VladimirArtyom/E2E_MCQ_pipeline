@@ -13,7 +13,7 @@ class CosineSimilarity():
         this.model = this._load_model(model_path) 
     
     def __call__(this, target_sentence: str, list_sentences: List[str]):
-        pass
+        return this._calculate_similarities(target_sentence, list_sentences)
 
     def _load_model(this, model_path: str):
         with open(model_path, "rb") as f:
@@ -54,10 +54,7 @@ class CosineSimilarity():
         
         return result
 
-    def _packed_result(this, result: List[str]):
-        ...
-    
-
+"""
 if __name__ == "__main__":
     embedding_path: str = "./embeddings/1M_embeddings.pkl"
     csc = CosineSimilarity(embedding_path)
@@ -69,5 +66,4 @@ if __name__ == "__main__":
     #with open("./embeddings/1M_embeddings.pkl", "wb") as f:
     #    pickle.dump(model, f)
     
-
-    
+"""
