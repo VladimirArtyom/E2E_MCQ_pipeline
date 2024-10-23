@@ -9,5 +9,4 @@ model-distractors_all_small/
 QAG_t5_base/
 *.ipynb
 regex.py
-helpers.py
 config.yaml
