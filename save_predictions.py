@@ -39,8 +39,6 @@ def predict_with_qag(qag: QuestionAnswerGenerator, data: pd.DataFrame):
         if indx % 50 == 0 and indx != 0:
             print("Currently running on {} out of {}".format(indx, len(indx)))
         new_dataFrame = pd.concat([new_dataFrame, pd.DataFrame(new_observation)], axis=0, ignore_index=True)
-        if indx == 4 :
-            break
         
     
     return new_dataFrame
@@ -63,8 +61,6 @@ def predict_with_qg(qg: QuestionGenerator, data: pd.DataFrame ):
             print("Currently running on {} out of {}".format(indx, len(indx)))
         
         new_dataFrame = pd.concat([new_dataFrame, pd.DataFrame(new_observation)], axis=0, ignore_index=True)
-        if indx == 4 :
-            break
         
     return new_dataFrame
 
@@ -90,31 +86,27 @@ def predict_with_dg(dg: DistractorGenerator, data: pd.DataFrame):
         if indx % 50 == 0 and indx != 0:
             print("Currently running on {} out of {}".format(indx, len(indx)))
         new_dataFrame = pd.concat([new_dataFrame, pd.DataFrame(new_observation)], axis=0, ignore_index=True)
-        if indx == 4 :
-            break
         
     return new_dataFrame
 
 def predict_with_dg_1(dg: DistractorGenerator, data: pd.DataFrame):
-    new_dataFrame = pd.DataFrame(columns=["question", "correct", "context", "incorrect", "pred_incorrect"],)
+    new_dataFrame = pd.DataFrame(columns=["question", "correct", "context", "incorrect", "distractor"],)
     for indx, item in data.iterrows():
         context = item["context"]
         answer = item["correct"]
         question = item["question"]
-        incorrect= item["incorrect"]
+        incorrect= item["distractor"]
         pred = dg(question=question, context=context, answer=answer, **DG_1_KWARGS)
         new_observation: Mapping = {
             "question": question,
             "correct": answer,
             "context": context,
-            "incorrect": incorrect,
-            "pred_incorrect": pred,
+            "distractor": incorrect,
+            "pred_distractor": pred,
         }
         if indx % 50 == 0 and indx != 0:
             print("Currently running on {} out of {}".format(indx, len(indx)))
         new_dataFrame = pd.concat([new_dataFrame, pd.DataFrame(new_observation)], axis=0, ignore_index=True)
-        if indx == 4 :
-            break
     return new_dataFrame
 
 if __name__ == "__main__":
@@ -166,7 +158,7 @@ if __name__ == "__main__":
            df_new = predict_with_dg(dg, test)
     elif args.model_type == "dg_1":
         dg = DistractorGenerator(
-            model,tokenizer,512,
+            model,tokenizer,128,
             question_token=args.question_token,
             context_token=args.context_token,
             answer_token=args.answer_token,
