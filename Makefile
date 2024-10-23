@@ -14,16 +14,19 @@ QAG_TYPE = qag
 DG_TYPE = dg 
 DG_1_TYPE = dg_1
 
-QG_SAVE_FILE_NAME_VAL = QG_Pred_val.csv
-QAG_SAVE_FILE_NAME_VAL = QAG_Pred_val.csv
-DG_SAVE_FILE_NAME_VAL = DG_Pred_val.csv
-DG_1_SAVE_FILE_NAME_VAL = DG_1_Pred_val.csv
+ABS_PATH = /content/drive/MyDrive/Thesis
+
+QG_SAVE_FILE_NAME_VAL = $(ABS_PATH)/QG_Pred_val.csv
+QAG_SAVE_FILE_NAME_VAL = $(ABS_PATH)/QAG_Pred_val.csv
+DG_SAVE_FILE_NAME_VAL = $(ABS_PATH)/DG_Pred_val.csv
+DG_1_SAVE_FILE_NAME_VAL = $(ABS_PATH)/DG_1_Pred_val.csv
 
 
-QG_SAVE_FILE_NAME_TEST = QG_Pred_test.csv
-QAG_SAVE_FILE_NAME_TEST = QAG_Pred_test.csv
-DG_SAVE_FILE_NAME_TEST = DG_Pred_test.csv
-DG_1_SAVE_FILE_NAME_TEST = DG_1_Pred_test.csv
+QG_SAVE_FILE_NAME_TEST = $(ABS_PATH)/QG_Pred_test.csv
+QAG_SAVE_FILE_NAME_TEST = $(ABS_PATH)/QAG_Pred_test.csv
+DG_SAVE_FILE_NAME_TEST = $(ABS_PATH)/DG_Pred_test.csv
+DG_1_SAVE_FILE_NAME_TEST = $(ABS_PATH)/DG_1_Pred_test.csv
+
 
 eval_val = val 
 eval_test = test
