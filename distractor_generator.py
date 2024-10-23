@@ -58,4 +58,4 @@ class DistractorGenerator(GenerationPipeline):
             truncation=True,
             return_tensors="pt"
         )
-        return encoded["input_ids"], encoded["attention_mask"]
+        return encoded["input_ids"].to(this.device), encoded["attention_mask"].to(this.device)
