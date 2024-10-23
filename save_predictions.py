@@ -37,7 +37,7 @@ def predict_with_qag(qag: QuestionAnswerGenerator, data: pd.DataFrame):
             "context": item["context"],
         }
         if indx % 50 == 0 and indx != 0:
-            print("Currently running on {} out of {}".format(indx, len(indx)))
+            print("Currently running on {} out of {}".format(indx, len(data)))
         new_dataFrame = pd.concat([new_dataFrame, pd.DataFrame(new_observation)], axis=0, ignore_index=True)
         
     
@@ -58,7 +58,7 @@ def predict_with_qg(qg: QuestionGenerator, data: pd.DataFrame ):
             "context": context,
         }
         if indx % 50 == 0 and indx != 0:
-            print("Currently running on {} out of {}".format(indx, len(indx)))
+            print("Currently running on {} out of {}".format(indx, len(data)))
         
         new_dataFrame = pd.concat([new_dataFrame, pd.DataFrame(new_observation)], axis=0, ignore_index=True)
         
@@ -84,7 +84,7 @@ def predict_with_dg(dg: DistractorGenerator, data: pd.DataFrame):
             "pred_incorrects": pred,
         }
         if indx % 50 == 0 and indx != 0:
-            print("Currently running on {} out of {}".format(indx, len(indx)))
+            print("Currently running on {} out of {}".format(indx, len(data)))
         new_dataFrame = pd.concat([new_dataFrame, pd.DataFrame(new_observation)], axis=0, ignore_index=True)
         
     return new_dataFrame
@@ -105,7 +105,7 @@ def predict_with_dg_1(dg: DistractorGenerator, data: pd.DataFrame):
             "pred_distractor": pred,
         }
         if indx % 50 == 0 and indx != 0:
-            print("Currently running on {} out of {}".format(indx, len(indx)))
+            print("Currently running on {} out of {}".format(indx, len(data)))
         new_dataFrame = pd.concat([new_dataFrame, pd.DataFrame(new_observation)], axis=0, ignore_index=True)
     return new_dataFrame
 
