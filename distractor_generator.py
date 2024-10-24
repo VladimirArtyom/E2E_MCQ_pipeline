@@ -25,14 +25,17 @@ class DistractorGenerator(GenerationPipeline):
         this.sep_token = sep_token
     
     def __call__(this, question: str, context: str, answer: str, **kwargs ):
-        input_ids, attention_mask = this._prep_distractor_inputs(question=question,
-                                                   context=context,
-                                                   answer=answer)
-        generated_result = this._generate(input_ids=input_ids,
-                                          attention_mask=attention_mask, **kwargs)
-        decoded = this._decode(generated_result)
+        try:
+            input_ids, attention_mask = this._prep_distractor_inputs(question=question,
+                                                    context=context,
+                                                    answer=answer)
+            generated_result = this._generate(input_ids=input_ids,
+                                            attention_mask=attention_mask, **kwargs)
+            decoded = this._decode(generated_result)
 
-        return decoded
+            return decoded
+        except:
+            return [">>NO-ANSWER<<"]
     def _prep_distractor_inputs(this,
                                 question: str,
                                 context: str,
