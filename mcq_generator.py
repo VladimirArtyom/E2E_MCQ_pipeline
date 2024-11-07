@@ -231,7 +231,6 @@ class GenerateDistractors():
             for para_ques in paraphrase_ques:
                 distractors.extend(this.distractorGenerator(question=para_ques, context=context, answer=answer, **kwargs_distractor))
         else:
-
             distractors.extend(this.distractorGenerator(question=question, context=context, answer=answer, **kwargs_distractor))
         return distractors
 
@@ -373,8 +372,8 @@ if __name__ == "__main__":
     ner_tokenizer = BertTokenizer.from_pretrained(args.ner_path_base)
     ner = NER_extractor(ner_model, ner_tokenizer)
 
-    #paraphrase_model = T5ForConditionalGeneration.from_pretrained(args.paraphrase_path)
-    #paraphrase_tokenizer = AutoTokenizer.from_pretrained(args.paraphrase_path)
+    paraphrase_model = T5ForConditionalGeneration.from_pretrained(args.paraphrase_path)
+    paraphrase_tokenizer = T5Tokenizer.from_pretrained(args.paraphrase_path)
 
     qag_pipeline = QuestionAnswerGenerator(qag_model,
                                             qag_tokenizer,
@@ -417,7 +416,6 @@ if __name__ == "__main__":
         args.sep_token,
         args.device
     )
-    """
     paraphrase_pipeline = ParaphraseQuestion(
         paraphrase_model,
         paraphrase_tokenizer,
@@ -425,12 +423,11 @@ if __name__ == "__main__":
         args.device
     )
     
-    """
 
     DG_generator = GenerateDistractors(
         distractorAllPipeline=dg_all_pipeline,
         distractorPipeline=dg_1_pipeline,
-        paraphrasePipeline=None,
+        paraphrasePipeline=paraphrase_pipeline,
         cosine_similarity=CosineSimilarity("./embeddings/1M_embeddings.pkl")
     )
     #context = "Sejarah Indonesia dimulai sejak zaman prasejarah ketika manusia pertama kali mendiami Nusantara sekitar 1,5 juta tahun yang lalu. Salah satu peradaban paling awal yang tercatat adalah Kerajaan Kutai di Kalimantan Timur pada abad ke-4 Masehi. Kemudian muncul kerajaan-kerajaan besar lainnya seperti Sriwijaya di Sumatera dan Majapahit di Jawa, yang masing-masing mencapai puncak kejayaannya pada abad ke-7 dan ke-14. Pengaruh Hindu-Buddha sangat kuat pada periode ini, yang kemudian diikuti oleh masuknya agama Islam pada abad ke-13 melalui para pedagang dari Arab dan Gujarat. Kolonialisasi Eropa dimulai pada abad ke-16 dengan kedatangan Portugis, diikuti oleh Belanda yang menjajah Indonesia selama lebih dari 300 tahun. Indonesia akhirnya meraih kemerdekaan pada 17 Agustus 1945 setelah perjuangan panjang melawan penjajahan."

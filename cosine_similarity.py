@@ -47,24 +47,12 @@ class CosineSimilarity():
             "status": "correct"
         }
         for indx, distractor_candidate in enumerate(sentences):
-            rouge_1, rouge_2, rouge_3, rouge_l = this.metrics._calculate_rouge(sentence_1, distractor_candidate)
-            bleu_1, bleu_2, bleu_3, bleu_4 = this.metrics._calculate_bleu(sentence_1, distractor_candidate)
+            #rouge_1, rouge_2, rouge_3, rouge_l = this.metrics._calculate_rouge(sentence_1, distractor_candidate)
+            #bleu_1, bleu_2, bleu_3, bleu_4 = this.metrics._calculate_bleu(sentence_1, distractor_candidate)
             distractor = {
                 "sentence": distractor_candidate,
                 "status": "distractor",
                 "similarity": this._calculate_similarity(sentence_1, distractor_candidate),
-                "rouge": {
-                    "r_1": rouge_1,
-                    "r_2": rouge_2,
-                    "r_3": rouge_3,
-                    "r_l": rouge_l
-                },
-                "bleu": {
-                    "b_1": bleu_1,
-                    "b_2": bleu_2,
-                    "b_3": bleu_3,
-                    "b_4": bleu_4,
-                }
             }
             result["distractor_{}".format(indx)] = distractor
         
