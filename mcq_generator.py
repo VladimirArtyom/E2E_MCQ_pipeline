@@ -192,7 +192,7 @@ class GenerateDistractors():
             distractor_all_kwargs = kwargs.get("kwargs_distractor_all")
             distractors_all = this._clean_distractor_all(this.generate_distractors(context=context, question=question, answer=answer, **distractor_all_kwargs))
             distractors_1.extend(distractors_all)
-        outputs = this.calculate_similarities(answer, distractors_all)
+        outputs = this.calculate_similarities(answer, distractors_1)
         return outputs
 
 
