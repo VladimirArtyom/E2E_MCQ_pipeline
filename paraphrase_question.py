@@ -15,9 +15,12 @@ class ParaphraseQuestion(GenerationPipeline):
         this.max_length = max_length
     
     def __call__(this, question: str, **kwargs):
-        input_ids, attention_mask = this._encode(this._prep_input(question)) 
-        paraphrased_question_raw = this._generate(input_ids, attention_mask)
-        return this._decode(paraphrased_question_raw)
+        try:
+            input_ids, attention_mask = this._encode(this._prep_input(question)) 
+            paraphrased_question_raw = this._generate(input_ids, attention_mask, **kwargs)
+            return this._decode(paraphrased_question_raw)
+        except:
+            return "<UNK>"
 
     def _prep_input(this, text: str):
         return "paraphrase: {} </s>".format(text)
@@ -30,20 +33,29 @@ class ParaphraseQuestion(GenerationPipeline):
             truncation=True,
             return_tensors="pt"
         )
-        return encoded["input_ids"], encoded["attention_mask"]
-    
+        return encoded["input_ids"].to(this.device), encoded["attention_mask"].to(this.device)
 """
 if __name__ == "__main__":
-    qg_model = T5ForConditionalGeneration.from_pretrained("t5-small")
-    qg_tokenizer = T5Tokenizer.from_pretrained("t5-small")
+    pp = "Wikidepia/IndoT5-base-paraphrase"
+    qg_model = T5ForConditionalGeneration.from_pretrained(pp)
+    qg_tokenizer = T5Tokenizer.from_pretrained(pp)
 
     pq = ParaphraseQuestion(model=qg_model,
                             tokenizer=qg_tokenizer,
-                            max_length=128,
+                            max_length=2568,
                             device="cpu")
-    
-    question = "Anak anak melakukan piket kelas agar kebersihan kelas terjaga"
-    text = pq(question=question)
+    kwargs = {
+        "num_beams": 3,
+        "top_p": 0.98,
+        "top_k": 130,
+        "num_return_sequences":5,
+        "repetition_penalty":3.2,
+        "temperature": 1.8,
+        "max_length": 256,
+        "early_stopping":True,
+        "do_sample": True
+    }
+    question = "Bagaimana Anak anak melakukan piket kelas agar kebersihan kelas terjaga?"
+    text = pq(question=question, **kwargs)
     print(text)
-    
 """
