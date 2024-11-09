@@ -71,7 +71,6 @@ DG_ALL_KWARGS_N: Mapping[str, Any] = {
     "max_length": 512,
     "num_return_sequences": 5,
     "early_stopping":True,
-
 }
 
 PARAPHRASE_KWARGS: Mapping[str, Any] = {
@@ -82,6 +81,7 @@ PARAPHRASE_KWARGS: Mapping[str, Any] = {
         "repetition_penalty":1.2,
         "temperature": 1.8,
         "max_length": 256,
+        "no_repeat_ngram_size": 3,
         "early_stopping":True,
         "do_sample": True
 }
