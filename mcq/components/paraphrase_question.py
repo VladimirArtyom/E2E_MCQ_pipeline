@@ -1,6 +1,5 @@
-from helpers import E2E_TOKEN
 from transformers import T5ForConditionalGeneration, T5Tokenizer
-from pipelines import GenerationPipeline
+from mcq.components.pipelines import GenerationPipeline
 from torch import Tensor
 from typing import Tuple
 class ParaphraseQuestion(GenerationPipeline):

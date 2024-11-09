@@ -1,10 +1,8 @@
-from helpers import E2E_TOKEN
 from typing import List, Tuple
 from transformers import pipeline
 from torch import Tensor
 import spacy
-from transformers import AutoModelForTokenClassification, AutoTokenizer, AutoModelForSequenceClassification, AutoModelForSeq2SeqLM
-from pipelines import GenerationPipeline
+from mcq.components.pipelines import GenerationPipeline
 class QuestionGenerator(GenerationPipeline):
     
     def __init__(this,

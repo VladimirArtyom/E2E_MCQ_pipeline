@@ -1,13 +1,9 @@
 import numpy as np 
 from typing import List, Mapping, Any
-import fasttext
 from sklearn.metrics.pairwise import cosine_similarity
-from gensim.models import KeyedVectors
-from automatic_metrics import AutomaticMetrics
-from numpy.linalg import norm
+from mcq.components.automatic_metrics import AutomaticMetrics
 import pickle
 from typing import List
-from numpy import dot
 
 class CosineSimilarity():
     def __init__(this, model_path: str):

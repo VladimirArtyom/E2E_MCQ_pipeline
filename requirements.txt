@@ -9,3 +9,5 @@ sentencepiece==0.2.0
 spacy==3.7.6
 pytorch_lightning==2.4.0
 omegaconf==2.3.0
+nltk==3.9.1
+rouge-score==0.1.2

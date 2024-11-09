@@ -1,7 +1,6 @@
 from transformers import T5ForConditionalGeneration, T5Tokenizer
-from pipelines import GenerationPipeline
-from helpers import E2E_TOKEN
-from typing import Mapping, Tuple
+from mcq.components.pipelines import GenerationPipeline
+from typing import Tuple
 from torch import Tensor
 class DistractorGenerator(GenerationPipeline):
     def __init__(this,
