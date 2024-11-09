@@ -137,7 +137,6 @@ if __name__ == "__main__":
     #context = "Amerika Serikat, atau yang sering disebut AS, adalah sebuah negara di Amerika Utara yang terdiri dari 50 negara bagian. Dikenal dengan julukan 'Negeri Paman Sam,' Amerika Serikat memiliki pengaruh besar dalam bidang ekonomi, politik, dan budaya di seluruh dunia. Ibukota negara ini adalah Washington, D.C., sementara New York City dikenal sebagai pusat keuangan global. Dengan berbagai latar belakang budaya yang beragam, negara ini juga dikenal dengan inovasi teknologi, pendidikan tinggi berkualitas, dan keindahan alam yang menakjubkan, mulai dari Grand Canyon hingga Taman Nasional Yellowstone. Amerika Serikat juga merupakan negara yang mendukung kebebasan dan hak asasi manusia, meskipun masih dihadapkan dengan tantangan dalam hal kesetaraan sosial dan ekonomi"
     #question = "Siapa yang disebut Paman sam ?"
     #answer = "Amerika Serikat"
-    #context = "Kontol"
 
     kwargs = {
         "kwargs_qg": QG_KWARGS,
@@ -149,7 +148,13 @@ if __name__ == "__main__":
     with open("./mcq/mcq_file/questions.json", "r", encoding="utf-8") as fichier:
         data = json.load(fichier)
 
-    print(data)
+    result = []
+    for indx, d in enumerate(data):
+        ques = mcq(d[f"question_{indx + 1}"], **kwargs)
+        result.append(ques)
+
+    with open("./mcq/mcq_file/result.json", "r", encoding="utf-8") as fichier:
+        json.dump(result, fichier, ensure_ascii=False, indent=4)
     #ques = mcq(context, **kwargs)
     #print(ques)
     #distractors = DG_generator(question, context, answer, **kwargs)
