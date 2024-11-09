@@ -125,7 +125,7 @@ if __name__ == "__main__":
         distractorAllPipeline=dg_all_pipeline,
         distractorPipeline=dg_1_pipeline,
         paraphrasePipeline=None,
-        cosine_similarity=CosineSimilarity("./embeddings/1M_embeddings.pkl")
+        cosine_similarity=CosineSimilarity("./embeddings/500k_embeddings.pkl")
     )
     #context = "Sejarah Indonesia dimulai sejak zaman prasejarah ketika manusia pertama kali mendiami Nusantara sekitar 1,5 juta tahun yang lalu. Salah satu peradaban paling awal yang tercatat adalah Kerajaan Kutai di Kalimantan Timur pada abad ke-4 Masehi. Kemudian muncul kerajaan-kerajaan besar lainnya seperti Sriwijaya di Sumatera dan Majapahit di Jawa, yang masing-masing mencapai puncak kejayaannya pada abad ke-7 dan ke-14. Pengaruh Hindu-Buddha sangat kuat pada periode ini, yang kemudian diikuti oleh masuknya agama Islam pada abad ke-13 melalui para pedagang dari Arab dan Gujarat. Kolonialisasi Eropa dimulai pada abad ke-16 dengan kedatangan Portugis, diikuti oleh Belanda yang menjajah Indonesia selama lebih dari 300 tahun. Indonesia akhirnya meraih kemerdekaan pada 17 Agustus 1945 setelah perjuangan panjang melawan penjajahan."
     #question = "Dimana letak kerajaan Kutai ?"
