@@ -153,7 +153,7 @@ if __name__ == "__main__":
         ques = mcq(d[f"question_{indx + 1}"], **kwargs)
         result.append(ques)
 
-    with open("./mcq/mcq_file/result.json", "r", encoding="utf-8") as fichier:
+    with open("./mcq/mcq_file/result.json", "w", encoding="utf-8") as fichier:
         json.dump(result, fichier, ensure_ascii=False, indent=4)
     #ques = mcq(context, **kwargs)
     #print(ques)

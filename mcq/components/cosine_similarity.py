@@ -48,7 +48,7 @@ class CosineSimilarity():
             distractor = {
                 "sentence": distractor_candidate,
                 "status": "distractor",
-                "similarity": this._calculate_similarity(sentence_1, distractor_candidate),
+                "similarity": str(this._calculate_similarity(sentence_1, distractor_candidate)),
             }
             result["distractor_{}".format(indx)] = distractor
         
