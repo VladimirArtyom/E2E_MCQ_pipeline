@@ -76,7 +76,7 @@ DG_ALL_KWARGS_N: Mapping[str, Any] = {
 
 PARAPHRASE_KWARGS: Mapping[str, Any] = {
         "num_beams": 3,
-        "top_p": 0.95,
+        "top_p": 0.98,
         "top_k": 120,
         "num_return_sequences":5,
         "repetition_penalty":1.2,

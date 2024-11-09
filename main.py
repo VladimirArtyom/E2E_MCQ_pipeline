@@ -50,26 +50,26 @@ if __name__ == "__main__":
     config = OmegaConf.load("config.yaml")
     token = config.h_token
 
-    qag_model = T5ForConditionalGeneration.from_pretrained(args.qag_path_base, use_auth_token=token)
+    qag_model = T5ForConditionalGeneration.from_pretrained(args.qag_path_base, use_auth_token=token).to(args.device)
     qag_tokenizer = T5Tokenizer.from_pretrained(args.qag_path_base, use_auth_token=token)
 
-    qg_model = T5ForConditionalGeneration.from_pretrained(args.qg_path_base, use_auth_token=token)
+    qg_model = T5ForConditionalGeneration.from_pretrained(args.qg_path_base, use_auth_token=token).to(args.device)
     qg_tokenizer = T5Tokenizer.from_pretrained(args.qg_path_base, use_auth_token=token)
 
     #qae_model = BertForSequenceClassification.from_pretrained(args.qae_path, use_auth_token=token)
     #qae_tokenizer = AutoTokenizer.from_pretrained(args.qae_path, use_auth_token=token)
 
-    dg_model = T5ForConditionalGeneration.from_pretrained(args.dg_path_base, use_auth_token=token)
+    dg_model = T5ForConditionalGeneration.from_pretrained(args.dg_path_base, use_auth_token=token).to(args.device)
     dg_tokenizer = T5Tokenizer.from_pretrained(args.dg_path_base, use_auth_token=token)
 
-    dg_1_model = T5ForConditionalGeneration.from_pretrained(args.dg_1_path_base, use_auth_token=token)
+    dg_1_model = T5ForConditionalGeneration.from_pretrained(args.dg_1_path_base, use_auth_token=token).to(args.device)
     dg_1_tokenizer = T5Tokenizer.from_pretrained(args.dg_1_path_base, use_auth_token=token)
 
     ner_model = BertForTokenClassification.from_pretrained(args.ner_path_base)
     ner_tokenizer = BertTokenizer.from_pretrained(args.ner_path_base)
     ner = NER_extractor(ner_model, ner_tokenizer)
 
-    paraphrase_model = T5ForConditionalGeneration.from_pretrained(args.paraphrase_path)
+    paraphrase_model = T5ForConditionalGeneration.from_pretrained(args.paraphrase_path).to(args.device)
     paraphrase_tokenizer = T5Tokenizer.from_pretrained(args.paraphrase_path)
 
     qag_pipeline = QuestionAnswerGenerator(qag_model,

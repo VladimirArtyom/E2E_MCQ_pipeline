@@ -23,9 +23,6 @@ class QuestionGenerator(GenerationPipeline):
         this.max_length = max_length
         #this.qg_model.eval()
 
-        ## Deprecated
-        this.regex_pattern = r'\b(?:tahun|ketinggian|populasi|panjang|luas)\s+(\d+[\.,]?\d*)\s*(?:km|meter|m|tahun|jiwa|persegi)?'
-        this.spacy_nlp = spacy.load("xx_sent_ud_sm")
 
     def __call__(this, context: str, answer: str, **kwargs):
         prep_input = this._prepare_qag_inputs(context, answer)
