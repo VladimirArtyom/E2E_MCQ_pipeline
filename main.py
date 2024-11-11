@@ -23,7 +23,7 @@ def parse_argument() -> Namespace:
     args.add_argument("--question_token", type=str, default="<question>")
     args.add_argument("--sep_token", type=str, default="<sep>")
     args.add_argument("--paraphraser_token", type=str, default="<paraphrase>")
-    args.add_argument("--device", type=str, default="cpu")
+    args.add_argument("--device", type=str, default="gpu")
 
     args.add_argument("--qg_max_split_sentence", type=int, default=64)
     args.add_argument("--use_evaluator", type=int, default=0, choices=[0, 1])
