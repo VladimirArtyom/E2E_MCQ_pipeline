@@ -5,9 +5,7 @@ from mcq.components.distractor_filters import Distractors_Filter
 from mcq.components.question_generator import QuestionGenerator
 from mcq.components.distractor_generator import DistractorGenerator
 from mcq.components.BERT_NER_extractor import NER_extractor
-from mcq.components.question_answer_evaluator import QuestionAnswerEvaluator
 from mcq.components.paraphrase_question import ParaphraseQuestion
-from mcq.components.cosine_similarity import CosineSimilarity
 from mcq.mcq_generator import MCQ_Generator
 from mcq.components.question_answer_generator import QuestionAnswerGenerator
 from kwargs import DG_1_KWARGS, QAG_KWARGS, QG_KWARGS, DG_ALL_KWARGS, PARAPHRASE_KWARGS
@@ -24,7 +22,7 @@ def parse_argument() -> Namespace:
     args.add_argument("--question_token", type=str, default="<question>")
     args.add_argument("--sep_token", type=str, default="<sep>")
     args.add_argument("--paraphraser_token", type=str, default="<paraphrase>")
-    args.add_argument("--device", type=str, default="gpu")
+    args.add_argument("--device", type=str, default="cuda")
 
     args.add_argument("--qg_max_split_sentence", type=int, default=64)
     args.add_argument("--use_evaluator", type=int, default=0, choices=[0, 1])
