@@ -1,12 +1,12 @@
 sat.py
 sat_2.py
-lightning_to_oldschool.py
 model_thesis/
 model-distractors_1/
 model-distractors_all/
 model-distractors_all_small/
 model-distractors_1_base/
-deprecated/
+deprecated/*.ipynb
+deprecated/save_predictions.py
 **.bin
 **.bin.gz
 **.vec
