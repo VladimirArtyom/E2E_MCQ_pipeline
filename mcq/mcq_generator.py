@@ -1,4 +1,4 @@
-from mcq.mcq_distractor_generator import GenerateDistractors
+from mcq.mcq_distractor_generator import GenerateDistractorParaphrase
 from mcq.mcq_qap_generator import GenerateQuestionAnswerPairs
 """
 class Executor():
@@ -133,7 +133,7 @@ class Executor():
 class MCQ_Generator():
     def __init__(this,
                  qg_generator: GenerateQuestionAnswerPairs,
-                 dg_generator: GenerateDistractors,
+                 dg_generator: GenerateDistractorParaphrase,
                  ):
         this.qg_generator = qg_generator
         this.dg_generator = dg_generator
