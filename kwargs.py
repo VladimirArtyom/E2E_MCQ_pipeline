@@ -38,14 +38,14 @@ DG_1_KWARGS: Mapping[str, Any] = {
 
 DG_ALL_KWARGS: Mapping[str, Any] = {
 
-    "num_beams": 10,
+    "num_beams": 5,
     "top_p": 0.95,
     "top_k": 150,
     "repetition_penalty":2.5,
-    "temperature": 1.4,
+    "temperature": 1.5,
     "max_length": 512,
     "do_sample":True,
-    "num_return_sequences": 1,
+    "num_return_sequences": 3,
     "early_stopping":True,
 }
 
