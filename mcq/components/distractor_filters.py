@@ -117,7 +117,7 @@ class Distractors_Filter():
                 result.append((d, score))
         return sorted(result, reverse=True, key=lambda x : x[1])
 
-    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.8):
+    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.75):
         result = []
         for d1 in distractors:
             for d2 in distractors:

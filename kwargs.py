@@ -1,12 +1,13 @@
 from typing import Mapping, Any
 QAG_KWARGS: Mapping[str, Any] = {
-    "num_beams": 10,
-    "top_p": 0.95,
-    "top_k": 200,
-    "temperature": 2.0,
+    "num_beams": 5,
+    "top_p": 0.90,
+    "top_k": 250,
+    "temperature": 1.5,
     "max_length": 512,
     "num_return_sequences": 1,
-    "repetition_penalty": 4.5,
+    "repetition_penalty": 2.5,
+    "do_sample": True,
     "early_stopping":True,
 }
 
