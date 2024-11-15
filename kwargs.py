@@ -5,7 +5,7 @@ QAG_KWARGS: Mapping[str, Any] = {
     "top_k": 250,
     "temperature": 1.5,
     "max_length": 512,
-    "num_return_sequences": 1,
+    "num_return_sequences": 3,
     "repetition_penalty": 2.5,
     "do_sample": True,
     "early_stopping":True,
@@ -25,12 +25,12 @@ QG_KWARGS: Mapping[str, Any] = {
 }
 
 DG_1_KWARGS: Mapping[str, Any] = {
-    "num_beams": 3,
+    "num_beams": 10,
     "top_p": 0.98,
     "top_k": 130,
-    "temperature": 1.0,
+    "temperature": 1.2,
     "max_length": 512,
-    "num_return_sequences": 3,
+    "num_return_sequences": 10,
     "repetition_penalty": 1.5,
     "no_repeat_ngram_size": 2,
     "do_sample": True,

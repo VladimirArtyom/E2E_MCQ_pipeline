@@ -68,12 +68,15 @@ class GenerateDistractorsCombineWithAllNoParaphrase():
         this.distractorAllGenerator: DistractorGenerator = distractorAllPipeline
         this.filters = distractor_filters
 
-    def __call__(this, context: str, question: str, answer: str, n: int=3, **kwargs):
+    def __call__(this, context: str, question: str, answer: str, n: int=5, **kwargs):
         distractors: List = this._clean_distractors_all(this._generate_distractors_all(context=context, answer=answer, question=question, **kwargs))
         distractors.extend(
             this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer, question=question, **kwargs))
         )
-        return distractors
+        outputs = this.filters(distractors)
+        if len(outputs) >= n:
+            return outputs[:n]
+        return outputs
 
     def _generate_distractors_all(this, context: str, answer: str, question: str, **kwargs) -> List:
         distractor_all_kwargs = kwargs.get("kwargs_distractor_all")
