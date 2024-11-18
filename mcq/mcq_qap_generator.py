@@ -50,8 +50,11 @@ class GenerateQuestionAnswerPairs():
         sentences = this._split_context_into_sentence(context)
         pairs = []
         for sentence in sentences:
-            answer, question = this.generate_question_answer_from_model(sentence, **kwargs)
-            pairs.append((question, answer))
+            try:
+                answer, question = this.generate_question_answer_from_model(sentence, **kwargs)
+                pairs.append((question, answer))
+            except:
+                continue
         return pairs
     
     def _split_context_into_sentence(this, context: str):

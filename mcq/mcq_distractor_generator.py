@@ -73,7 +73,7 @@ class GenerateDistractorsCombineWithAllNoParaphrase():
         distractors.extend(
             this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer, question=question, **kwargs))
         )
-        outputs = this.filters(distractors)
+        outputs = this.filters(answer, distractors)
         if len(outputs) >= n:
             return outputs[:n]
         return outputs
