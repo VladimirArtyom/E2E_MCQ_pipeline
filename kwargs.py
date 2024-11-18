@@ -3,7 +3,7 @@ QAG_KWARGS: Mapping[str, Any] = {
     "num_beams": 5,
     "top_p": 0.90,
     "top_k": 250,
-    "temperature": 1.5,
+    "temperature": 1.4,
     "max_length": 512,
     "num_return_sequences": 3,
     "repetition_penalty": 2.5,
@@ -13,7 +13,7 @@ QAG_KWARGS: Mapping[str, Any] = {
 
 QG_KWARGS: Mapping[str, Any] = {
     "num_beams": 3,
-    "top_p": 0.97,
+    "top_p": 0.98,
     "top_k": 100,
     "temperature": 0.8,
     "max_length": 512,

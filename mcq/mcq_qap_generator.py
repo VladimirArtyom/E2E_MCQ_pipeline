@@ -51,7 +51,7 @@ class GenerateQuestionAnswerPairs():
         pairs = []
         for sentence in sentences:
             try:
-                answer, question = this.generate_question_answer_from_model(sentence, **kwargs)
+                answer, question = this.generate_question_answer_from_model(sentence + "<context>" + context, **kwargs)
                 pairs.append((question, answer))
             except:
                 continue
