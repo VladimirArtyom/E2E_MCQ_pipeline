@@ -81,7 +81,7 @@ class Distractors_Filter():
 
     def _distractor_ensemble(this, correct_answer: str,
                             distractor: str,
-                            threshold: float =0.7,
+                            threshold: float =0.55,
                             jc_weight = 1,
                             cos_weight = 1.2,
                             jen_weight = 2 ) -> bool:
@@ -117,7 +117,7 @@ class Distractors_Filter():
                 result.append((d, score))
         return sorted(result, reverse=True, key=lambda x : x[1])
 
-    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.75):
+    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.65):
         result = []
         for d1 in distractors:
             for d2 in distractors:
