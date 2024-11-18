@@ -144,11 +144,11 @@ class MCQ_Generator():
         for indx, content in enumerate(list_de_qag):
             question = content[0]
             answer = content[1]
-            distractors = this.dg_generator(context, question, answer, **kwargs)
+            distractors, all_outputs_raw = this.dg_generator(context, question, answer, **kwargs)
             final_outputs[indx] = {
                 "context": context,
                 "question": question,
                 "answer": answer,
                 "distractors": distractors
             }
-        return final_outputs
+        return final_outputs, all_outputs_raw

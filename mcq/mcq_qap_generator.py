@@ -34,7 +34,6 @@ class GenerateQuestionAnswerPairs():
         return answers
 
     def generate_question_from_QG(this, context: str, **kwargs):
-        sentences = this._split_context_into_sentence(context)
         pairs = []
         answer_candidates = this._generate_candidate_answers_given_a_sentence(context)
         for answer in answer_candidates:

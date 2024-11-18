@@ -12,12 +12,13 @@ class Distractors_Filter():
 
     def __call__(this, correct_answer: str, distractors: List[str]):
         correct_answer = this._clean_text(correct_answer)
-        ds = [this._clean_text(d) for d in distractors]
+        ds= [this._clean_text(d) for d in distractors]
+        tout_ds = ds
         ds = this._length_filter(correct_answer, ds)
         ds = this._levenshtein_filter(correct_answer, ds)
         ds = this._distractors_candidate_filter(correct_answer, ds)
         ds = this._same_distractor_filter(ds)
-        return ds
+        return ds, tout_ds
 
     def _load_embedding(this, model_path: str):
         with open(model_path, "rb") as f:
@@ -81,7 +82,7 @@ class Distractors_Filter():
 
     def _distractor_ensemble(this, correct_answer: str,
                             distractor: str,
-                            threshold: float =0.55,
+                            threshold: float =0.70,
                             jc_weight = 1,
                             cos_weight = 1.2,
                             jen_weight = 2 ) -> bool:
@@ -101,7 +102,7 @@ class Distractors_Filter():
         filtered_distractor =  [d for d in distractors if abs(len(d.split()) - correct_len) <= max_length_diff and d != ""]
         return filtered_distractor
 
-    def _levenshtein_filter(this, correct_answer, distractors: List[str], threshold: float = 0.5):
+    def _levenshtein_filter(this, correct_answer, distractors: List[str], threshold: float = 0.1):
         result = []
         for d in distractors:
             score = this._calculate_levenshtein_similarity(correct_answer, d)
@@ -117,7 +118,7 @@ class Distractors_Filter():
                 result.append((d, score))
         return sorted(result, reverse=True, key=lambda x : x[1])
 
-    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.65):
+    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.35):
         result = []
         for d1 in distractors:
             for d2 in distractors:

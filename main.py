@@ -11,6 +11,7 @@ from mcq.components.question_answer_generator import QuestionAnswerGenerator
 from kwargs import DG_1_KWARGS, QAG_KWARGS, QG_KWARGS, DG_ALL_KWARGS, PARAPHRASE_KWARGS
 from omegaconf import OmegaConf
 
+from pickle import dump
 from transformers import T5ForConditionalGeneration, T5Tokenizer, BertForTokenClassification, BertTokenizer
 import json
 
@@ -151,11 +152,15 @@ if __name__ == "__main__":
 
     result = []
     for indx, d in enumerate(data):
-        ques = mcq(d[f"question_{indx + 1}"], **kwargs)
+        ques, all_outputs = mcq(d[f"question_{indx + 1}"], **kwargs)
         result.append(ques)
 
     with open("./mcq/mcq_file/result.json", "w", encoding="utf-8") as fichier:
         json.dump(result, fichier, ensure_ascii=False, indent=4)
+    
+    with open("./mcq/mcq_file/result_raw.pickle", "wb") as fichier:
+        dump(all_outputs, fichier)
+
     #ques = mcq(context, **kwargs)
     #print(ques)
     #distractors = DG_generator(question, context, answer, **kwargs)

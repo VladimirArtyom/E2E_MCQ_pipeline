@@ -18,10 +18,10 @@ class GenerateDistractorParaphrase():
 
     def __call__(this, context: str, question: str, answer: str, n: int=3, **kwargs):
         distractors_1 = this._clean_distractor_1(this.generate_distractor(context=context, question=question, answer=answer, **kwargs))
-        outputs = this.filters(answer, distractors_1)
+        outputs, all_outputs = this.filters(answer, distractors_1)
         if len(outputs) >= n:
-            return outputs[:n]
-        return outputs
+            return outputs[:n], all_outputs
+        return outputs, all_outputs
 
 
     def _clean_distractor_all(this, texts: List[str]) -> List[str]: 
@@ -73,10 +73,10 @@ class GenerateDistractorsCombineWithAllNoParaphrase():
         distractors.extend(
             this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer, question=question, **kwargs))
         )
-        outputs = this.filters(answer, distractors)
+        outputs, all_outputs = this.filters(answer, distractors)
         if len(outputs) >= n:
-            return outputs[:n]
-        return outputs
+            return outputs[:n], all_outputs
+        return outputs, all_outputs
 
     def _generate_distractors_all(this, context: str, answer: str, question: str, **kwargs) -> List:
         distractor_all_kwargs = kwargs.get("kwargs_distractor_all")
@@ -120,10 +120,10 @@ class GenerateDistractorsCombineWithAll():
             distractor_all_kwargs = kwargs.get("kwargs_distractor_all")
             distractors_all = this._clean_distractor_all(this.generate_distractors(context=context, question=question, answer=answer, **distractor_all_kwargs))
             distractors_1.extend(distractors_all)
-        outputs = this.filters(answer, distractors_1)
+        outputs, all_outputs = this.filters(answer, distractors_1)
         if len(outputs) >= n:
-            return outputs[:n]
-        return outputs
+            return outputs[:n], all_outputs
+        return outputs, all_outputs
 
 
     def _clean_distractor_all(this, texts: List[str]) -> List[str]: 
