@@ -140,6 +140,7 @@ class MCQ_Generator():
     
     def __call__(this, context: str, **kwargs):
         final_outputs = {}
+        out_raw = []
         list_de_qag = this.qg_generator(context, **kwargs)
         for indx, content in enumerate(list_de_qag):
             question = content[0]
@@ -151,4 +152,5 @@ class MCQ_Generator():
                 "answer": answer,
                 "distractors": distractors
             }
-        return final_outputs, all_outputs_raw
+            out_raw.append(all_outputs_raw)
+        return final_outputs, out_raw
