@@ -102,7 +102,7 @@ class Distractors_Filter():
         filtered_distractor =  [d for d in distractors if abs(len(d.split()) - correct_len) <= max_length_diff and d != ""]
         return filtered_distractor
 
-    def _levenshtein_filter(this, correct_answer, distractors: List[str], threshold: float = 0.1):
+    def _levenshtein_filter(this, correct_answer, distractors: List[str], threshold: float = 0.4):
         result = []
         for d in distractors:
             score = this._calculate_levenshtein_similarity(correct_answer, d)
