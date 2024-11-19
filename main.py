@@ -1,5 +1,5 @@
 from argparse import Namespace, ArgumentParser
-from mcq.mcq_distractor_generator import GenerateDistractorsCombineWithAllNoParaphrase
+from mcq.mcq_distractor_generator import GenerateDistractorsCombineWithAllNoParaphrase, GenerateDistractorParaphrase
 from mcq.mcq_qap_generator import GenerateQuestionAnswerPairs
 from mcq.components.distractor_filters import Distractors_Filter
 from mcq.components.question_generator import QuestionGenerator
@@ -119,16 +119,16 @@ if __name__ == "__main__":
 
     
     ds = Distractors_Filter("./embeddings/500k_embeddings.pkl")
-    #DG_generator = GenerateDistractorParaphrase(
-    #    distractorPipeline=dg_1_pipeline,
-    #    paraphrasePipeline=paraphrase_pipeline,
-    #    distractor_filters=ds
-    #)
-    DG_generator = GenerateDistractorsCombineWithAllNoParaphrase(
+    DG_generator = GenerateDistractorParaphrase(
         distractorPipeline=dg_1_pipeline,
-        distractorAllPipeline=dg_all_pipeline,
+        paraphrasePipeline=paraphrase_pipeline,
         distractor_filters=ds
     )
+    #DG_generator = GenerateDistractorsCombineWithAllNoParaphrase(
+    #    distractorPipeline=dg_1_pipeline,
+    #    distractorAllPipeline=dg_all_pipeline,
+    #    distractor_filters=ds
+    #)
     #context = "Sejarah Indonesia dimulai sejak zaman prasejarah ketika manusia pertama kali mendiami Nusantara sekitar 1,5 juta tahun yang lalu. Salah satu peradaban paling awal yang tercatat adalah Kerajaan Kutai di Kalimantan Timur pada abad ke-4 Masehi. Kemudian muncul kerajaan-kerajaan besar lainnya seperti Sriwijaya di Sumatera dan Majapahit di Jawa, yang masing-masing mencapai puncak kejayaannya pada abad ke-7 dan ke-14. Pengaruh Hindu-Buddha sangat kuat pada periode ini, yang kemudian diikuti oleh masuknya agama Islam pada abad ke-13 melalui para pedagang dari Arab dan Gujarat. Kolonialisasi Eropa dimulai pada abad ke-16 dengan kedatangan Portugis, diikuti oleh Belanda yang menjajah Indonesia selama lebih dari 300 tahun. Indonesia akhirnya meraih kemerdekaan pada 17 Agustus 1945 setelah perjuangan panjang melawan penjajahan."
     #question = "Dimana letak kerajaan Kutai ?"
     #answer = "Kalimantan Timur"
