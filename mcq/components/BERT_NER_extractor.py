@@ -11,7 +11,7 @@ class NER_extractor():
         this.ner_pipeline = pipeline(task="ner",
                                      model=this.model,
                                      tokenizer=this.tokenizer)
-        this.threshold = 0.97
+        this.threshold = 0.90
 
     def aggregate_entities(this, ner_results):
         aggregated_entities = []
