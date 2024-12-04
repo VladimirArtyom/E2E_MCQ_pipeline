@@ -129,16 +129,11 @@ if __name__ == "__main__":
         distractorAllPipeline=dg_all_pipeline,
         distractor_filters=ds
     )
-    #context = "Sejarah Indonesia dimulai sejak zaman prasejarah ketika manusia pertama kali mendiami Nusantara sekitar 1,5 juta tahun yang lalu. Salah satu peradaban paling awal yang tercatat adalah Kerajaan Kutai di Kalimantan Timur pada abad ke-4 Masehi. Kemudian muncul kerajaan-kerajaan besar lainnya seperti Sriwijaya di Sumatera dan Majapahit di Jawa, yang masing-masing mencapai puncak kejayaannya pada abad ke-7 dan ke-14. Pengaruh Hindu-Buddha sangat kuat pada periode ini, yang kemudian diikuti oleh masuknya agama Islam pada abad ke-13 melalui para pedagang dari Arab dan Gujarat. Kolonialisasi Eropa dimulai pada abad ke-16 dengan kedatangan Portugis, diikuti oleh Belanda yang menjajah Indonesia selama lebih dari 300 tahun. Indonesia akhirnya meraih kemerdekaan pada 17 Agustus 1945 setelah perjuangan panjang melawan penjajahan."
-    #question = "Dimana letak kerajaan Kutai ?"
-    #answer = "Kalimantan Timur"
     mcq = MCQ_Generator(
         QG_generator,
         DG_generator
     )
-    #context = "Amerika Serikat, atau yang sering disebut AS, adalah sebuah negara di Amerika Utara yang terdiri dari 50 negara bagian. Dikenal dengan julukan 'Negeri Paman Sam,' Amerika Serikat memiliki pengaruh besar dalam bidang ekonomi, politik, dan budaya di seluruh dunia. Ibukota negara ini adalah Washington, D.C., sementara New York City dikenal sebagai pusat keuangan global. Dengan berbagai latar belakang budaya yang beragam, negara ini juga dikenal dengan inovasi teknologi, pendidikan tinggi berkualitas, dan keindahan alam yang menakjubkan, mulai dari Grand Canyon hingga Taman Nasional Yellowstone. Amerika Serikat juga merupakan negara yang mendukung kebebasan dan hak asasi manusia, meskipun masih dihadapkan dengan tantangan dalam hal kesetaraan sosial dan ekonomi"
-    #question = "Siapa yang disebut Paman sam ?"
-    #answer = "Amerika Serikat"
+
 
     kwargs = {
         "kwargs_qg": QG_KWARGS,
