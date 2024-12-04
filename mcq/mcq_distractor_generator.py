@@ -91,8 +91,16 @@ class GenerateDistractorsCombineWithAllNoParaphrase():
         pattern = "<[^>]+>"
         for text in distractors:
             list_of_distractor = text.split("<sep>") # Put the <sep> token here
+
             for distractor in list_of_distractor:
-                cleaned.append(re.sub(pattern, "", distractor))
+                ds  = distractor.split("</s>")
+                if ds != []:
+                    for d in ds:
+                        if d != " " and d != "":
+                            cleaned.append(re.sub(pattern,"",(d).strip()))
+                else:
+                    if d != " " and d != "":
+                        cleaned.append(re.sub(pattern,"",(distractor).strip()))
         return cleaned
 
     def _clean_distractors_1(this, distractors: List[str]) -> List[str]:
