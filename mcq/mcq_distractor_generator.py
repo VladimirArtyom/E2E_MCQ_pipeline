@@ -99,7 +99,7 @@ class GenerateDistractorsCombineWithAllNoParaphrase():
                         if d != " " and d != "":
                             cleaned.append(re.sub(pattern,"",(d).strip()))
                 else:
-                    if d != " " and d != "":
+                    if distractor != " " and distractor != "":
                         cleaned.append(re.sub(pattern,"",(distractor).strip()))
         return cleaned
 
