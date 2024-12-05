@@ -82,18 +82,18 @@ class Distractors_Filter():
 
     def _distractor_ensemble(this, correct_answer: str,
                             distractor: str,
-                            threshold: float =0.70,
+                            threshold: float =0.60,
                             jc_weight = 1,
                             cos_weight = 1.2,
                             jen_weight = 2 ) -> bool:
 
         jaccard_sim = this._calculate_jaccard_similarity(correct_answer, distractor) * jc_weight
         cos_sim = ((this._calculate_cosine_similarity(correct_answer, distractor) + 1 ) / 2 )* cos_weight
-        jen_sim = this._calculate_jensen_shannon_similarity(correct_answer, distractor) * jen_weight
+        #jen_sim = this._calculate_jensen_shannon_similarity(correct_answer, distractor) * jen_weight
 
-        weight_sum = jc_weight + cos_weight + jen_weight
+        weight_sum = jc_weight + cos_weight # + jen_weight
 
-        result = ( jaccard_sim + cos_sim + jen_sim ) / weight_sum
+        result = ( jaccard_sim + cos_sim) / weight_sum # + jen_sim ) / weight_sum
         
         return result >= threshold, result
 
@@ -102,7 +102,7 @@ class Distractors_Filter():
         filtered_distractor =  [d for d in distractors if abs(len(d.split()) - correct_len) <= max_length_diff and d != ""]
         return filtered_distractor
 
-    def _levenshtein_filter(this, correct_answer, distractors: List[str], threshold: float = 0.4):
+    def _levenshtein_filter(this, correct_answer, distractors: List[str], threshold: float = 0.1):
         result = []
         for d in distractors:
             score = this._calculate_levenshtein_similarity(correct_answer, d)
@@ -118,7 +118,7 @@ class Distractors_Filter():
                 result.append((d, score))
         return sorted(result, reverse=True, key=lambda x : x[1])
 
-    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.35):
+    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.8):
         result = []
         for d1 in distractors:
             for d2 in distractors:
