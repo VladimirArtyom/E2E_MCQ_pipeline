@@ -89,11 +89,11 @@ class Distractors_Filter():
 
         jaccard_sim = this._calculate_jaccard_similarity(correct_answer, distractor) * jc_weight
         cos_sim = ((this._calculate_cosine_similarity(correct_answer, distractor) + 1 ) / 2 )* cos_weight
-        #jen_sim = this._calculate_jensen_shannon_similarity(correct_answer, distractor) * jen_weight
+        jen_sim = this._calculate_jensen_shannon_similarity(correct_answer, distractor) * jen_weight
 
-        weight_sum = jc_weight + cos_weight # + jen_weight
+        weight_sum = jc_weight + cos_weight + jen_weight
 
-        result = ( jaccard_sim + cos_sim) / weight_sum # + jen_sim ) / weight_sum
+        result = ( jaccard_sim + cos_sim + jen_sim ) / weight_sum
         
         return result >= threshold, result
 
@@ -118,7 +118,7 @@ class Distractors_Filter():
                 result.append((d, score))
         return sorted(result, reverse=True, key=lambda x : x[1])
 
-    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.8):
+    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.6):
         result = []
         for d1 in distractors:
             for d2 in distractors:
