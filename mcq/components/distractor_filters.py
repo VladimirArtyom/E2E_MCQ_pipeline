@@ -84,16 +84,15 @@ class Distractors_Filter():
                             distractor: str,
                             threshold: float =0.60,
                             jc_weight = 1,
-                            cos_weight = 1.2,
-                            jen_weight = 2 ) -> bool:
+                            cos_weight = 1.5,
+                            ) -> bool:
 
         jaccard_sim = this._calculate_jaccard_similarity(correct_answer, distractor) * jc_weight
         cos_sim = ((this._calculate_cosine_similarity(correct_answer, distractor) + 1 ) / 2 )* cos_weight
-        jen_sim = this._calculate_jensen_shannon_similarity(correct_answer, distractor) * jen_weight
 
-        weight_sum = jc_weight + cos_weight + jen_weight
+        weight_sum = jc_weight + cos_weight 
 
-        result = ( jaccard_sim + cos_sim + jen_sim ) / weight_sum
+        result = ( jaccard_sim + cos_sim) / weight_sum
         
         return result >= threshold, result
 
