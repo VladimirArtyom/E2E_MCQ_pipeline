@@ -6,6 +6,15 @@ import numpy as np
 import Levenshtein
 import pickle
 
+from sklearn.metrics.pairwise import cosine_similarity
+from typing import List, Tuple, Set
+from scipy.spatial.distance import jensenshannon
+from string import punctuation
+import numpy as np
+import Levenshtein
+import pickle
+import json
+
 class Distractors_Filter():
     def __init__(this, embedding_path):
         this.embedding_model = this._load_embedding(embedding_path)
@@ -61,18 +70,6 @@ class Distractors_Filter():
 
         return jaccard_similarity
 
-    def _normalize_vector(this, vector : List[float]) -> List[float]:
-        exp = np.exp(vector - np.max(vector))
-        return exp / np.sum(exp)
-
-    def _calculate_jensen_shannon_similarity(this, correct_answer: str, distractor: str):
-        
-        correct_embedding = this._normalize_vector(this._sentence_embedding(correct_answer))
-        distractor_embedding = this._normalize_vector(this._sentence_embedding(distractor))
-
-        jsd = jensenshannon(correct_embedding, distractor_embedding)
-
-        return 1 - jsd
 
     def _calculate_levenshtein_similarity(this, correct_answer: str, distractor: str):
         distance = Levenshtein.distance(correct_answer, distractor) 
@@ -80,21 +77,14 @@ class Distractors_Filter():
         return similarity
     
 
-    def _distractor_ensemble(this, correct_answer: str,
+    def _distractor_similarity(this, correct_answer: str,
                             distractor: str,
-                            threshold: float =0.60,
-                            jc_weight = 1,
-                            cos_weight = 1.5,
+                            threshold: float =0.45,
                             ) -> bool:
 
-        jaccard_sim = this._calculate_jaccard_similarity(correct_answer, distractor) * jc_weight
-        cos_sim = ((this._calculate_cosine_similarity(correct_answer, distractor) + 1 ) / 2 )* cos_weight
+        cos_sim = ((this._calculate_cosine_similarity(correct_answer, distractor) + 1 ) / 2 )
 
-        weight_sum = jc_weight + cos_weight 
-
-        result = ( jaccard_sim + cos_sim) / weight_sum
-        
-        return result >= threshold, result
+        return cos_sim >= threshold, cos_sim
 
     def _length_filter(this, correct_answer, distractors: List[str], max_length_diff=3):
         correct_len = len(correct_answer.split())
@@ -112,7 +102,7 @@ class Distractors_Filter():
     def _distractors_candidate_filter(this, correct_answer, distractors: List[str]):
         result = []
         for d in distractors:
-            cond, score = this._distractor_ensemble(d, correct_answer)
+            cond, score = this._distractor_similarity(d, correct_answer)
             if cond:
                 result.append((d, score))
         return sorted(result, reverse=True, key=lambda x : x[1])
