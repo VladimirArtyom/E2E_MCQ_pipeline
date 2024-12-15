@@ -2,77 +2,37 @@ from .components.paraphrase_question import ParaphraseQuestion
 from .components.distractor_generator import DistractorGenerator
 from .components.pipelines import GenerationPipeline
 from .components.distractor_filters import Distractors_Filter
-
+from .components.enums import *
 from typing import List
 
 import re
-class GenerateDistractorParaphrase():
-    def __init__(this,
-            paraphrasePipeline: GenerationPipeline,
-            distractorPipeline: GenerationPipeline,
-            distractor_filters: Distractors_Filter,
-            ):
-            this.paraphraseGenerator: ParaphraseQuestion = paraphrasePipeline
-            this.distractorGenerator: DistractorGenerator = distractorPipeline
-            this.filters: Distractors_Filter = distractor_filters
-
-    def __call__(this, context: str, question: str, answer: str, n: int=3, **kwargs):
-        distractors_1 = this._clean_distractor_1(this.generate_distractor(context=context, question=question, answer=answer, **kwargs))
-        outputs, all_outputs = this.filters(answer, distractors_1)
-        if len(outputs) >= n:
-            return outputs[:n], all_outputs
-        return outputs, all_outputs
-
-
-    def _clean_distractor_all(this, texts: List[str]) -> List[str]: 
-        distractors: List[str] = []
-        pattern = "<[^>]+>"
-        for text in texts:
-            split = text.split("<sep>")
-            for s in split:
-                distractors.append(re.sub(pattern, "" ,s))
-        
-        return distractors
-
-    def _clean_distractor_1(this, texts: List[str]):
-        distractors: List[str] = []
-        pattern = "<[^>]+>"
-        for text in texts:
-            distractors.append(re.sub(pattern, "", text))
-        return distractors
-
-    def paraphrase_question(this, question, **kwargs) -> str:
-        return this.paraphraseGenerator(question, **kwargs)
-
-    def generate_distractor(this, context: str, answer: str, question: str, **kwargs):
-        distractors = []
-        kwargs_paraphrase = kwargs.get("kwargs_paraphrase")
-        kwargs_distractor = kwargs.get("kwargs_distractor_1")
-        if this.paraphraseGenerator is not None:
-            paraphrase_ques = this.paraphrase_question(question, **kwargs_paraphrase)
-            for para_ques in paraphrase_ques:
-                distractors.extend(this.distractorGenerator(question=para_ques, context=context, answer=answer, **kwargs_distractor))
-        else:
-            distractors.extend(this.distractorGenerator(question=question, context=context, answer=answer, **kwargs_distractor))
-        return distractors
-    
 
 class GenerateDistractorsCombineWithAllNoParaphrase():
     def __init__(
         this,
         distractorPipeline: GenerationPipeline,
         distractorAllPipeline: GenerationPipeline,
-        distractor_filters: Distractors_Filter
+        distractor_filters: Distractors_Filter,
     ):
         this.distractorGenerator: DistractorGenerator = distractorPipeline
         this.distractorAllGenerator: DistractorGenerator = distractorAllPipeline
         this.filters = distractor_filters
 
-    def __call__(this, context: str, question: str, answer: str, n: int=5, **kwargs):
-        distractors: List = this._clean_distractors_all(this._generate_distractors_all(context=context, answer=answer, question=question, **kwargs))
-        distractors.extend(
-            this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer, question=question, **kwargs))
-        )
+    def __call__(this, context: str, question: str, answer: str, experiment_type: ExperimentDG, n: int=5, **kwargs):
+        if experiment_type == ExperimentDG.DAG_ONLY.value:
+            distractors: List = this._clean_distractors_all(this._generate_distractors_all(context=context, answer=answer,
+                                                                                           question=question, **kwargs))
+            distractors = this._attach_metadata(distractors, Metadata.DAG.value)
+        elif experiment_type == ExperimentDG.DG_ONLY.value:
+            distractors: List = this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer,
+                                                                                      question=question, **kwargs))
+            distractors = this._attach_metadata(distractors, Metadata.DG.value)
+        else:
+            distractors: List = this._attach_metadata(this._clean_distractors_all(this._generate_distractors_all(context=context, answer=answer, question=question, **kwargs)), Metadata.DAG.value)
+            distractors.extend(
+                this._attach_metadata(this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer, question=question, **kwargs)), Metadata.DG.value)
+            )
+
         outputs, all_outputs = this.filters(answer, distractors)
         if len(outputs) >= n:
             return outputs[:n], all_outputs
@@ -109,6 +69,12 @@ class GenerateDistractorsCombineWithAllNoParaphrase():
         for distractor in distractors:
                 cleaned.append(re.sub(pattern, "", distractor))
         return cleaned
+
+    def _attach_metadata(this, distractors: List[str], metadata_name: str) -> List[str]:
+        result = []
+        for distractor in distractors:
+            result.append((distractor, metadata_name))
+
 
 class GenerateDistractorsCombineWithAll():
     def __init__(this,

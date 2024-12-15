@@ -3,6 +3,7 @@ from .components.BERT_NER_extractor import NER_extractor
 from .components.question_generator import QuestionGenerator
 from .components.question_answer_evaluator import QuestionAnswerEvaluator
 from .components.question_answer_generator import QuestionAnswerGenerator
+from .components.enums import ExperimentQG, Metadata
 
 from typing import List, Tuple
 import re
@@ -20,18 +21,33 @@ class GenerateQuestionAnswerPairs():
         this.questionAnswerEvaluator: QuestionAnswerEvaluator = questionAnswerEvaluator
         this.ner_extractor = ner
 
-    def __call__(this, context, **kwargs) -> List[Tuple[str, str]]:
+    def __call__(this, context, experiment_type: ExperimentQG, **kwargs) -> List[Tuple[str, str]]:
         kwargs_qag = kwargs.get("kwargs_qag")
         kwargs_qg = kwargs.get("kwargs_qg")
 
-        qag_outputs = this.generate_question_from_QAG(context, **kwargs_qag)
-        qg_outputs = this.generate_question_from_QG(context, **kwargs_qg)
-        outputs =  qg_outputs + qag_outputs
+        if experiment_type.value == ExperimentQG.QG_ONLY.value:
+            outputs = this._attach_metadata(this.generate_question_from_QG(context, **kwargs_qg),
+                                            Metadata.QG)
+        elif experiment_type.value == ExperimentQG.QAG_ONLY.value:
+            outputs = this._attach_metadata(this.generate_question_from_QAG(context, **kwargs_qag),
+                                            Metadata.QAG)
+        else:
+            qg_outputs = this._attach_metadata(this.generate_question_from_QG(context, **kwargs_qg), Metadata.QG)
+            qag_outputs = this._attach_metadata(this.generate_question_from_QAG(context, **kwargs_qag), Metadata.QAG)
+            outputs =  qg_outputs + qag_outputs
+
         return outputs
         
     def _generate_candidate_answers_given_a_sentence(this, sentence):
         answers = this.ner_extractor(sentence)
         return answers
+
+    def _attach_metadata(this, outputs: List[str], metadata: Metadata):
+        result = []
+        for output in outputs:
+            result.append((output, metadata.name))
+        return result
+
 
     def generate_question_from_QG(this, context: str, **kwargs):
         pairs = []

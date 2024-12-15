@@ -1,11 +1,12 @@
-from argparse import Namespace, ArgumentParser
-from mcq.mcq_distractor_generator import GenerateDistractorsCombineWithAllNoParaphrase, GenerateDistractorParaphrase
+from argparse import Namespace, ArgumentParser, ArgumentTypeError
+from mcq.mcq_distractor_generator import GenerateDistractorsCombineWithAllNoParaphrase
 from mcq.mcq_qap_generator import GenerateQuestionAnswerPairs
 from mcq.components.distractor_filters import Distractors_Filter
 from mcq.components.question_generator import QuestionGenerator
 from mcq.components.distractor_generator import DistractorGenerator
 from mcq.components.BERT_NER_extractor import NER_extractor
 from mcq.components.paraphrase_question import ParaphraseQuestion
+from mcq.components.enums import *
 from mcq.mcq_generator import MCQ_Generator
 from mcq.components.question_answer_generator import QuestionAnswerGenerator
 from kwargs import DG_1_KWARGS, QAG_KWARGS, QG_KWARGS, DG_ALL_KWARGS, PARAPHRASE_KWARGS
@@ -14,6 +15,12 @@ from omegaconf import OmegaConf
 from pickle import dump
 from transformers import T5ForConditionalGeneration, T5Tokenizer, BertForTokenClassification, BertTokenizer
 import json
+
+def parse_experiment_type(value: str):
+    try:
+        return ExperimentState(value)
+    except ValueError:
+        raise ArgumentTypeError(f"Invalid experiment {value}")
 
 def parse_argument() -> Namespace:
     
@@ -36,8 +43,28 @@ def parse_argument() -> Namespace:
     args.add_argument("--qae_path", type=str, default="VosLannack/QAG_ID_Evaluator")
     args.add_argument("--dg_1_path_base", type=str, default="VosLannack/Distractor_1_base_cc")
     args.add_argument("--paraphrase_path", type=str, default="Wikidepia/IndoT5-base-paraphrase")
+    args.add_argument("--experiment_type", type=parse_experiment_type,
+                    required=True, help="Check enums file in components folder")
 
     return args.parse_args()
+
+def execute_(question_json_path: str,
+            experiment_dg: ExperimentDG,
+            experiment_qg: ExperimentQG,
+            mcq: MCQ_Generator ):
+    result = []
+    with open(question_json_path, "r", encoding="utf-8") as fichier:
+        data = json.load(fichier)
+    
+    for indx, d in enumerate(data):
+        ques, all_outputs = mcq(d[f"question_{indx + 1}"], experiment_qg.value, experiment_dg.value, **kwargs)
+        result.append(ques)
+    
+    with open("./mcq/mcq_file/result.json", "w", encoding="utf-8") as fichier:
+        json.dump(result, fichier, ensure_ascii=False, indent=4)
+    
+    with open("./mcq/mcq_file/result_raw.pickle", "wb") as fichier:
+        dump(all_outputs, fichier)
 
 if __name__ == "__main__":
     # Use your access token here
@@ -52,9 +79,6 @@ if __name__ == "__main__":
 
     qg_model = T5ForConditionalGeneration.from_pretrained(args.qg_path_base, use_auth_token=token).to(args.device)
     qg_tokenizer = T5Tokenizer.from_pretrained(args.qg_path_base, use_auth_token=token)
-
-    #qae_model = BertForSequenceClassification.from_pretrained(args.qae_path, use_auth_token=token)
-    #qae_tokenizer = AutoTokenizer.from_pretrained(args.qae_path, use_auth_token=token)
 
     dg_model = T5ForConditionalGeneration.from_pretrained(args.dg_path_base, use_auth_token=token).to(args.device)
     dg_tokenizer = T5Tokenizer.from_pretrained(args.dg_path_base, use_auth_token=token)
@@ -117,23 +141,17 @@ if __name__ == "__main__":
         args.device
     )
 
-    
     ds = Distractors_Filter("./embeddings/500k_embeddings.pkl")
-    #DG_generator = GenerateDistractorParaphrase(
-    #    distractorPipeline=dg_1_pipeline,
-    #    paraphrasePipeline=paraphrase_pipeline,
-    #    distractor_filters=ds
-    #)
+
     DG_generator = GenerateDistractorsCombineWithAllNoParaphrase(
         distractorPipeline=dg_1_pipeline,
         distractorAllPipeline=dg_all_pipeline,
-        distractor_filters=ds
+        distractor_filters=ds,
     )
     mcq = MCQ_Generator(
         QG_generator,
         DG_generator
     )
-
 
     kwargs = {
         "kwargs_qg": QG_KWARGS,
@@ -142,19 +160,25 @@ if __name__ == "__main__":
         "kwargs_distractor_1": DG_1_KWARGS,
         "kwargs_paraphrase": PARAPHRASE_KWARGS
     }
-    with open("./mcq/mcq_file/questions.json", "r", encoding="utf-8") as fichier:
-        data = json.load(fichier)
-
-    result = []
-    for indx, d in enumerate(data):
-        ques, all_outputs = mcq(d[f"question_{indx + 1}"], **kwargs)
-        result.append(ques)
-
-    with open("./mcq/mcq_file/result.json", "w", encoding="utf-8") as fichier:
-        json.dump(result, fichier, ensure_ascii=False, indent=4)
-    
-    with open("./mcq/mcq_file/result_raw.pickle", "wb") as fichier:
-        dump(all_outputs, fichier)
+    path = "./mcq/mcq_file/question_test.json"
+    if ExperimentState.QG_DG.value == args.experiment_type:
+        execute_(path, ExperimentQG.QG_ONLY, ExperimentDG.DG_ONLY, mcq) 
+    elif ExperimentState.QG_DAG.value == args.experiment_type:
+        execute_(path, ExperimentQG.QG_ONLY, ExperimentDG.DAG_ONLY, mcq) 
+    elif ExperimentState.QAG_DG.value == args.experiment_type:
+        execute_(path, ExperimentQG.QAG_ONLY, ExperimentDG.DG_ONLY, mcq) 
+    elif ExperimentState.QAG_DAG.value == args.experiment_type:
+        execute_(path, ExperimentQG.QAG_ONLY, ExperimentDG.DAG_ONLY, mcq) 
+    elif ExperimentState.QG_QAG_DAG.value == args.experiment_type:
+        execute_(path, ExperimentQG.QG_QAG, ExperimentDG.DAG_ONLY, mcq) 
+    elif ExperimentState.QG_QAG_DG.value == args.experiment_type:
+        execute_(path, ExperimentQG.QG_QAG, ExperimentDG.DG_ONLY, mcq) 
+    elif ExperimentState.QG_DG_DAG.value == args.experiment_type:
+        execute_(path, ExperimentQG.QG_ONLY, ExperimentDG.DG_DAG, mcq) 
+    elif ExperimentState.QAG_DG_DAG.value == args.experiment_type:
+        execute_(path, ExperimentQG.QAG_ONLY, ExperimentDG.DG_DAG, mcq) 
+    elif ExperimentState.QG_QAG_DG_DAG.value == args.experiment_type:
+        execute_(path, ExperimentQG.QG_QAG, ExperimentDG.DG_DAG, mcq) 
 
     #ques = mcq(context, **kwargs)
     #print(ques)
