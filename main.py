@@ -1,20 +1,19 @@
-from argparse import Namespace, ArgumentParser, ArgumentTypeError
+from argparse import Namespace, ArgumentParser
 from mcq.mcq_distractor_generator import GenerateDistractorsCombineWithAllNoParaphrase
 from mcq.mcq_qap_generator import GenerateQuestionAnswerPairs
 from mcq.components.distractor_filters import Distractors_Filter
 from mcq.components.question_generator import QuestionGenerator
 from mcq.components.distractor_generator import DistractorGenerator
 from mcq.components.BERT_NER_extractor import NER_extractor
-from mcq.components.paraphrase_question import ParaphraseQuestion
 from mcq.components.enums import *
 from mcq.mcq_generator import MCQ_Generator
 from mcq.components.question_answer_generator import QuestionAnswerGenerator
 from kwargs import DG_1_KWARGS, QAG_KWARGS, QG_KWARGS, DG_ALL_KWARGS, PARAPHRASE_KWARGS
 from omegaconf import OmegaConf
 
-from pickle import dump
 from transformers import T5ForConditionalGeneration, T5Tokenizer, BertForTokenClassification, BertTokenizer
 import json
+import os
 
 def parse_argument() -> Namespace:
     
@@ -36,7 +35,6 @@ def parse_argument() -> Namespace:
     args.add_argument("--dg_path_base", type=str, default="VosLannack/Distractor_all_base_cc")
     args.add_argument("--qae_path", type=str, default="VosLannack/QAG_ID_Evaluator")
     args.add_argument("--dg_1_path_base", type=str, default="VosLannack/Distractor_1_base_cc")
-    args.add_argument("--paraphrase_path", type=str, default="Wikidepia/IndoT5-base-paraphrase")
     args.add_argument("--experiment_type",
                     required=True, help="Check enums file in components folder")
 
@@ -45,7 +43,9 @@ def parse_argument() -> Namespace:
 def execute_(question_json_path: str,
             experiment_qg: ExperimentQG,
             experiment_dg: ExperimentDG,
-            mcq: MCQ_Generator ):
+            mcq: MCQ_Generator,
+            result_filtered_name: str,
+            result_raw_name: str ):
     result = []
     with open(question_json_path, "r", encoding="utf-8") as fichier:
         data = json.load(fichier)
@@ -54,10 +54,10 @@ def execute_(question_json_path: str,
         ques, all_outputs = mcq(d[f"question_{indx + 1}"], experiment_qg, experiment_dg, **kwargs)
         result.append(ques)
     
-    with open("./mcq/mcq_file/result.json", "w", encoding="utf-8") as fichier:
+    with open(os.path.join("./mcq/mcq_file", result_filtered_name), "w", encoding="utf-8") as fichier:
         json.dump(result, fichier, ensure_ascii=False, indent=4)
     
-    with open("./mcq/mcq_file/result_raw.json", "w") as fichier:
+    with open(os.path.join("./mcq/mcq_file/", result_raw_name), "w", encoding="utf-8") as fichier:
         json.dump(all_outputs, fichier, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
@@ -83,9 +83,6 @@ if __name__ == "__main__":
     ner_model = BertForTokenClassification.from_pretrained(args.ner_path_base)
     ner_tokenizer = BertTokenizer.from_pretrained(args.ner_path_base)
     ner = NER_extractor(ner_model, ner_tokenizer)
-
-    paraphrase_model = T5ForConditionalGeneration.from_pretrained(args.paraphrase_path).to(args.device)
-    paraphrase_tokenizer = T5Tokenizer.from_pretrained(args.paraphrase_path)
 
     qag_pipeline = QuestionAnswerGenerator(qag_model,
                                             qag_tokenizer,
@@ -128,12 +125,6 @@ if __name__ == "__main__":
         args.sep_token,
         args.device
     )
-    paraphrase_pipeline = ParaphraseQuestion(
-        paraphrase_model,
-        paraphrase_tokenizer,
-        512,
-        args.device
-    )
 
     ds = Distractors_Filter("./embeddings/500k_embeddings.pkl")
 
@@ -156,31 +147,31 @@ if __name__ == "__main__":
     }
     path = "./mcq/mcq_file/question_test.json"
     if ExperimentState.QG_DG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DG_ONLY.value, mcq) 
+        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DG_ONLY.value, mcq, "QG_DG.json", "QG_DG_RAW.json") 
 
     elif ExperimentState.QG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DAG_ONLY.value, mcq) 
+        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DAG_ONLY.value, mcq, "QG_DAG.json", "QG_DAG_RAW.json") 
 
     elif ExperimentState.QAG_DG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DG_ONLY.value, mcq) 
+        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DG_ONLY.value, mcq, "QAG_DG.json", "QAG_DG_RAW.json") 
 
     elif ExperimentState.QAG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DAG_ONLY.value, mcq) 
+        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DAG_ONLY.value, mcq, "QAG_DAG.json", "QAG_DAG_RAW.json") 
     
     elif ExperimentState.QG_QAG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DAG_ONLY.value, mcq) 
+        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DAG_ONLY.value, mcq, "QG_QAG_DAG.json", "QG_QAG_DAG_RAW.json") 
 
     elif ExperimentState.QG_QAG_DG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DG_ONLY.value, mcq) 
+        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DG_ONLY.value, mcq, "QG_QAG_DG.json", "QG_QAG_DG_RAW.json") 
 
     elif ExperimentState.QG_DG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DG_DAG.value, mcq) 
+        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DG_DAG.value, mcq, "QG_DG_DAG.json", "QG_DG_DAG_RAW.json") 
     
     elif ExperimentState.QAG_DG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DG_DAG.value, mcq) 
+        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DG_DAG.value, mcq, "QAG_DG_DAG.json", "QAG_DG_DAG_RAW.json") 
 
     elif ExperimentState.QG_QAG_DG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DG_DAG.value, mcq) 
+        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DG_DAG.value, mcq, "QG_QAG_DG_DAG.json", "QG_QAG_DG_DAG_RAW.json") 
 
     #ques = mcq(context, **kwargs)
     #print(ques)
