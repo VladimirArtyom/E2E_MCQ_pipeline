@@ -27,9 +27,9 @@ QG_KWARGS: Mapping[str, Any] = {
 
 DG_1_KWARGS: Mapping[str, Any] = {
     "num_beams": 10,
-    "top_p": 0.95,
+    "top_p": 0.98,
     "top_k": 130,
-    "temperature": 1.3,
+    "temperature": 1.2,
     "max_length": 512,
     "num_return_sequences": 10,
     "repetition_penalty": 1.5,

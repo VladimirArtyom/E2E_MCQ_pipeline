@@ -23,7 +23,7 @@ class Distractors_Filter():
         tout_ds = distractors
         ds = this._length_filter(correct_answer, distractors)
         ds = this._distractors_candidate_filter(correct_answer, ds)
-        ds = this._same_distractor_filter(ds)
+        #ds = this._same_distractor_filter(ds)
         tout_ds = this._distractors_candidate_filter(correct_answer, tout_ds)
         return ds, tout_ds
 
@@ -65,7 +65,7 @@ class Distractors_Filter():
 
     def _distractor_similarity(this, correct_answer: str,
                             distractor: str,
-                            threshold: float =0.45,
+                            threshold: float =0.80,
                             ) -> bool:
 
         cos_sim = ((this._calculate_cosine_similarity(correct_answer, distractor.strip()) + 1 ) / 2 )
