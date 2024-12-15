@@ -21,14 +21,14 @@ class GenerateQuestionAnswerPairs():
         this.questionAnswerEvaluator: QuestionAnswerEvaluator = questionAnswerEvaluator
         this.ner_extractor = ner
 
-    def __call__(this, context, experiment_type: ExperimentQG, **kwargs) -> List[Tuple[str, str]]:
+    def __call__(this, context, experiment_type: str, **kwargs) -> List[Tuple[str, str]]:
         kwargs_qag = kwargs.get("kwargs_qag")
         kwargs_qg = kwargs.get("kwargs_qg")
 
-        if experiment_type.value == ExperimentQG.QG_ONLY.value:
+        if experiment_type == ExperimentQG.QG_ONLY.value:
             outputs = this._attach_metadata(this.generate_question_from_QG(context, **kwargs_qg),
                                             Metadata.QG)
-        elif experiment_type.value == ExperimentQG.QAG_ONLY.value:
+        elif experiment_type == ExperimentQG.QAG_ONLY.value:
             outputs = this._attach_metadata(this.generate_question_from_QAG(context, **kwargs_qag),
                                             Metadata.QAG)
         else:

@@ -27,9 +27,9 @@ QG_KWARGS: Mapping[str, Any] = {
 
 DG_1_KWARGS: Mapping[str, Any] = {
     "num_beams": 10,
-    "top_p": 0.98,
+    "top_p": 0.95,
     "top_k": 130,
-    "temperature": 1.2,
+    "temperature": 1.3,
     "max_length": 512,
     "num_return_sequences": 10,
     "repetition_penalty": 1.5,
@@ -65,24 +65,3 @@ PARAPHRASE_KWARGS: Mapping[str, Any] = {
         "do_sample": True
 }
 
-
-class ExperimentState(Enum):
-    QG_DG = 1
-    QG_DAG = 2
-    QAG_DG = 3
-    QAG_DAG = 4
-    QG_QAG_DG = 5
-    QG_QAG_DAG = 6
-    QG_DG_DAG = 7
-    QAG_DG_DAG = 8
-    QG_QAG_DG_DAG = 9
-
-class ExperimentQG(Enum):
-    QG_ONLY = 1
-    QAG_ONLY = 2
-    QG_QAG = 3
-
-class ExperimentDG(Enum):
-    DG_ONLY = 1
-    DAG_ONLY = 2
-    DG_DAG = 3

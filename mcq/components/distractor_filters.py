@@ -24,6 +24,7 @@ class Distractors_Filter():
         ds = this._length_filter(correct_answer, distractors)
         ds = this._distractors_candidate_filter(correct_answer, ds)
         ds = this._same_distractor_filter(ds)
+        tout_ds = this._distractors_candidate_filter(correct_answer, tout_ds)
         return ds, tout_ds
 
     def _load_embedding(this, model_path: str):
@@ -55,18 +56,6 @@ class Distractors_Filter():
         ngrams = [tuple(words[i:i+n]) for i in range(len(words)-n + 1)]
         return set(ngrams)
 
-    def _calculate_jaccard_similarity(this, correct_answer: str, distractor: str, n_gram=2):
-
-        correct_ngram: set = this._generate_ngrams(correct_answer, n_gram)
-        distractor_ngram: set = this._generate_ngrams(distractor, n_gram)
-        
-        intersect = correct_ngram.intersection(distractor_ngram)
-        union = correct_ngram.union(distractor_ngram)
-
-        jaccard_similarity = len(intersect) / len(union) if union else 0
-
-        return jaccard_similarity
-
 
     def _calculate_levenshtein_similarity(this, correct_answer: str, distractor: str):
         distance = Levenshtein.distance(correct_answer, distractor) 
@@ -79,7 +68,7 @@ class Distractors_Filter():
                             threshold: float =0.45,
                             ) -> bool:
 
-        cos_sim = ((this._calculate_cosine_similarity(correct_answer, distractor) + 1 ) / 2 )
+        cos_sim = ((this._calculate_cosine_similarity(correct_answer, distractor.strip()) + 1 ) / 2 )
 
         return cos_sim >= threshold, cos_sim
 
