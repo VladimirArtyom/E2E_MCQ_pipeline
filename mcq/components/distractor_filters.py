@@ -20,11 +20,8 @@ class Distractors_Filter():
         this.embedding_model = this._load_embedding(embedding_path)
 
     def __call__(this, correct_answer: str, distractors: List[str]):
-        correct_answer = this._clean_text(correct_answer)
-        ds= [this._clean_text(d) for d in distractors]
-        tout_ds = ds
-        ds = this._length_filter(correct_answer, ds)
-        ds = this._levenshtein_filter(correct_answer, ds)
+        tout_ds = distractors
+        ds = this._length_filter(correct_answer, distractors)
         ds = this._distractors_candidate_filter(correct_answer, ds)
         ds = this._same_distractor_filter(ds)
         return ds, tout_ds
@@ -86,32 +83,24 @@ class Distractors_Filter():
 
         return cos_sim >= threshold, cos_sim
 
-    def _length_filter(this, correct_answer, distractors: List[str], max_length_diff=3):
+    def _length_filter(this, correct_answer, distractors: List[Tuple[str, str]], max_length_diff=3):
         correct_len = len(correct_answer.split())
-        filtered_distractor =  [d for d in distractors if abs(len(d.split()) - correct_len) <= max_length_diff and d != ""]
+        filtered_distractor =  [d for d in distractors if abs(len(d[0].split()) - correct_len) <= max_length_diff and d[0] != ""]
         return filtered_distractor
 
-    def _levenshtein_filter(this, correct_answer, distractors: List[str], threshold: float = 0.1):
+    def _distractors_candidate_filter(this, correct_answer, distractors: List[Tuple[str, str]]):
         result = []
         for d in distractors:
-            score = this._calculate_levenshtein_similarity(correct_answer, d)
-            if  score >= threshold:
-                result.append(d)
-        return result
-
-    def _distractors_candidate_filter(this, correct_answer, distractors: List[str]):
-        result = []
-        for d in distractors:
-            cond, score = this._distractor_similarity(d, correct_answer)
+            cond, score = this._distractor_similarity(d[0], correct_answer)
             if cond:
                 result.append((d, score))
         return sorted(result, reverse=True, key=lambda x : x[1])
 
-    def _same_distractor_filter(this, distractors: List[Tuple[str, float]], threshold: float = 0.6):
+    def _same_distractor_filter(this, distractors: List[Tuple[Tuple[str, str], float]], threshold: float = 0.6):
         result = []
         for d1 in distractors:
             for d2 in distractors:
-                cosine_sim = this._calculate_cosine_similarity(d1[0], d2[0])
+                cosine_sim = this._calculate_cosine_similarity(d1[0][0], d2[0][0])
                 if cosine_sim >= threshold:
                     if d1[1] > d2[1] and d1 not in result:
                         result.append(d1)
@@ -120,8 +109,8 @@ class Distractors_Filter():
         return result
     
 
-    def _clean_text(this, text: str) -> str :
-        text = text.lower()
-        text = text.strip()
-        text = text.translate(str.maketrans("", "", punctuation))
-        return text
+    #def _clean_text(this, text: str) -> str :
+    #    text = text.lower()
+    #    text = text.strip()
+    #    text = text.translate(str.maketrans("", "", punctuation))
+    #    return text
