@@ -24,7 +24,7 @@ class Distractors_Filter():
         ds = this._length_filter(correct_answer, distractors)
         ds = this._distractors_candidate_filter(correct_answer, ds)
         #ds = this._same_distractor_filter(ds)
-        tout_ds = this._distractors_candidate_filter(correct_answer, tout_ds)
+        tout_ds = this._distractors_candidate_filter(correct_answer, tout_ds, 0.0)
         return ds, tout_ds
 
     def _load_embedding(this, model_path: str):
@@ -77,10 +77,10 @@ class Distractors_Filter():
         filtered_distractor =  [d for d in distractors if abs(len(d[0].split()) - correct_len) <= max_length_diff and d[0] != ""]
         return filtered_distractor
 
-    def _distractors_candidate_filter(this, correct_answer, distractors: List[Tuple[str, str]]):
+    def _distractors_candidate_filter(this, correct_answer, distractors: List[Tuple[str, str]], threshold=0.80):
         result = []
         for d in distractors:
-            cond, score = this._distractor_similarity(d[0], correct_answer)
+            cond, score = this._distractor_similarity(d[0], correct_answer, threshold)
             if cond:
                 result.append((d, score))
         return sorted(result, reverse=True, key=lambda x : x[1])
