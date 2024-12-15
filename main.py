@@ -51,7 +51,7 @@ def execute_(question_json_path: str,
         data = json.load(fichier)
     
     for indx, d in enumerate(data):
-        ques, all_outputs = mcq(d[f"question_{indx + 1}"], experiment_qg.value, experiment_dg.value, **kwargs)
+        ques, all_outputs = mcq(d[f"question_{indx + 1}"], experiment_qg, experiment_dg, **kwargs)
         result.append(ques)
     
     with open("./mcq/mcq_file/result.json", "w", encoding="utf-8") as fichier:
