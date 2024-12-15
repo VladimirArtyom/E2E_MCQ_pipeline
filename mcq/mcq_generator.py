@@ -21,13 +21,13 @@ class MCQ_Generator():
             distractors, all_outputs_raw = this.dg_generator(context, question, answer, experiment_type_DG, **kwargs)
             final_outputs[indx] = {
                 "context": context,
-                "question": question,
+                "question": (question, content[1]),
                 "answer": answer,
                 "distractors": distractors
             }
             out_raw[indx] = {
                 "context": context,
-                "question": question,
+                "question": (question, content[1]),
                 "answer": answer,
                 "distractors": all_outputs_raw
             }
