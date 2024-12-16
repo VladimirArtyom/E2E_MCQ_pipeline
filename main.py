@@ -32,7 +32,7 @@ def parse_argument() -> Namespace:
     args.add_argument("--qag_path_base", type=str, default="VosLannack/QAG_ID_Generator_t5_base")
     args.add_argument("--ner_path_base", type=str, default="cahya/bert-base-indonesian-NER")
     args.add_argument("--qg_path_base", type=str, default="VosLannack/QG_ID_Generator_t5_base")
-    args.add_argument("--dg_path_base", type=str, default="VosLannack/Distractor_all_base_cc")
+    args.add_argument("--dg_path_base", type=str, default="VosLannack/Distractors_all_base")
     args.add_argument("--qae_path", type=str, default="VosLannack/QAG_ID_Evaluator")
     args.add_argument("--dg_1_path_base", type=str, default="VosLannack/Distractor_1_base_cc")
     args.add_argument("--experiment_type",
