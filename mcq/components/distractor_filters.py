@@ -23,7 +23,6 @@ class Distractors_Filter():
         tout_ds = distractors
         ds = this._length_filter(correct_answer, distractors)
         ds = this._distractors_candidate_filter(correct_answer, ds)
-        #ds = this._same_distractor_filter(ds)
         tout_ds = this._distractors_candidate_filter(correct_answer, tout_ds, 0.0)
         return ds, tout_ds
 
@@ -84,18 +83,6 @@ class Distractors_Filter():
             if cond:
                 result.append((d, score))
         return sorted(result, reverse=True, key=lambda x : x[1])
-
-    def _same_distractor_filter(this, distractors: List[Tuple[Tuple[str, str], float]], threshold: float = 0.6):
-        result = []
-        for d1 in distractors:
-            for d2 in distractors:
-                cosine_sim = this._calculate_cosine_similarity(d1[0][0], d2[0][0])
-                if cosine_sim >= threshold:
-                    if d1[1] > d2[1] and d1 not in result:
-                        result.append(d1)
-                    elif d1[1] < d2[1] and d2 not in result:
-                        result.append(d2)
-        return result
     
 
     #def _clean_text(this, text: str) -> str :
