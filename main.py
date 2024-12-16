@@ -47,18 +47,20 @@ def execute_(question_json_path: str,
             result_filtered_name: str,
             result_raw_name: str ):
     result = []
+    rawResult = []
     with open(question_json_path, "r", encoding="utf-8") as fichier:
         data = json.load(fichier)
     
     for indx, d in enumerate(data):
         ques, all_outputs = mcq(d[f"question_{indx + 1}"], experiment_qg, experiment_dg, **kwargs)
         result.append(ques)
+        rawResult.append(all_outputs)
     
     with open(os.path.join("./mcq/mcq_file", result_filtered_name), "w", encoding="utf-8") as fichier:
         json.dump(result, fichier, ensure_ascii=False, indent=4)
     
     with open(os.path.join("./mcq/mcq_file/", result_raw_name), "w", encoding="utf-8") as fichier:
-        json.dump(all_outputs, fichier, ensure_ascii=False, indent=4)
+        json.dump(rawResult, fichier, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
     # Use your access token here
