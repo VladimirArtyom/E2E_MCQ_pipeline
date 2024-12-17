@@ -34,8 +34,7 @@ class GenerateDistractorsCombineWithAllNoParaphrase():
             )
 
         outputs, all_outputs = this.filters(answer, distractors)
-        if len(outputs) >= n:
-            return outputs[:n], all_outputs
+        
         return outputs, all_outputs
 
     def _generate_distractors_all(this, context: str, answer: str, question: str, **kwargs) -> List:
