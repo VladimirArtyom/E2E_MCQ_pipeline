@@ -150,31 +150,31 @@ if __name__ == "__main__":
     }
     path = "./mcq/mcq_file/question_test.json"
     if ExperimentState.QG_DG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DG_ONLY.value, mcq, "QG_DG.json", "QG_DG_RAW.json") 
+        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DG_ONLY.value, mcq, "QG_DG.json", "QG_DG_RAW.json", **kwargs) 
 
     elif ExperimentState.QG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DAG_ONLY.value, mcq, "QG_DAG.json", "QG_DAG_RAW.json") 
+        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DAG_ONLY.value, mcq, "QG_DAG.json", "QG_DAG_RAW.json", **kwargs) 
 
     elif ExperimentState.QAG_DG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DG_ONLY.value, mcq, "QAG_DG.json", "QAG_DG_RAW.json") 
+        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DG_ONLY.value, mcq, "QAG_DG.json", "QAG_DG_RAW.json", **kwargs) 
 
     elif ExperimentState.QAG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DAG_ONLY.value, mcq, "QAG_DAG.json", "QAG_DAG_RAW.json") 
+        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DAG_ONLY.value, mcq, "QAG_DAG.json", "QAG_DAG_RAW.json", **kwargs) 
     
     elif ExperimentState.QG_QAG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DAG_ONLY.value, mcq, "QG_QAG_DAG.json", "QG_QAG_DAG_RAW.json") 
+        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DAG_ONLY.value, mcq, "QG_QAG_DAG.json", "QG_QAG_DAG_RAW.json", **kwargs) 
 
     elif ExperimentState.QG_QAG_DG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DG_ONLY.value, mcq, "QG_QAG_DG.json", "QG_QAG_DG_RAW.json") 
+        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DG_ONLY.value, mcq, "QG_QAG_DG.json", "QG_QAG_DG_RAW.json", **kwargs) 
 
     elif ExperimentState.QG_DG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DG_DAG.value, mcq, "QG_DG_DAG.json", "QG_DG_DAG_RAW.json") 
+        execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DG_DAG.value, mcq, "QG_DG_DAG.json", "QG_DG_DAG_RAW.json", **kwargs) 
     
     elif ExperimentState.QAG_DG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DG_DAG.value, mcq, "QAG_DG_DAG.json", "QAG_DG_DAG_RAW.json") 
+        execute_(path, ExperimentQG.QAG_ONLY.value, ExperimentDG.DG_DAG.value, mcq, "QAG_DG_DAG.json", "QAG_DG_DAG_RAW.json", **kwargs) 
 
     elif ExperimentState.QG_QAG_DG_DAG.value == args.experiment_type:
-        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DG_DAG.value, mcq, "QG_QAG_DG_DAG.json", "QG_QAG_DG_DAG_RAW.json") 
+        execute_(path, ExperimentQG.QG_QAG.value, ExperimentDG.DG_DAG.value, mcq, "QG_QAG_DG_DAG.json", "QG_QAG_DG_DAG_RAW.json", **kwargs) 
 
     #ques = mcq(context, **kwargs)
     #print(ques)
