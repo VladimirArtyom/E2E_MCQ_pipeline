@@ -45,7 +45,8 @@ def execute_(question_json_path: str,
             experiment_dg: ExperimentDG,
             mcq: MCQ_Generator,
             result_filtered_name: str,
-            result_raw_name: str ):
+            result_raw_name: str,
+             **kwargs ):
     result = []
     rawResult = []
     with open(question_json_path, "r", encoding="utf-8") as fichier:
