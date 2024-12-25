@@ -146,7 +146,7 @@ if __name__ == "__main__":
     DG_generator = GenerateDistractorsCombineWithAll(
         distractorPipeline=dg_1_pipeline,
         distractorAllPipeline=dg_all_pipeline,
-        distractor_filters=ds,
+        distractor_grader=ds,
         paraphrasePipeline=paraphrasePipeline
     )
 

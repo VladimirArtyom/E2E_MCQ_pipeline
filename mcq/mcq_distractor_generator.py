@@ -31,18 +31,34 @@ class GenerateDistractorsCombineWithAll():
             distractors: List = []
             for pp_question in paraphrased_questions:
                 if pp_question != "<UNK>":
-                    distractors.extend(this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer,
+                    distractors_current = []
+                    distractors_current.extend(this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer,
                                                                                         question=pp_question, **kwargs)))
-                    distractors = this._attach_metadata(distractors, Metadata.DG.value, pp_question)
-        else:
-            distractors: List = this._attach_metadata(this._clean_distractors_all(this._generate_distractors_all(context=context, answer=answer, question=question, **kwargs)), Metadata.DAG.value)
+                    distractors.extend(this._attach_metadata(distractors_current, pp_question))
+            distractors = this._attach_metadata(distractors, Metadata.DG.value)
             distractors.extend(
                 this._attach_metadata(this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer, question=question, **kwargs)), Metadata.DG.value)
             )
+        else:
+            kwargs_paraphrase = kwargs.get("kwargs_paraphrase")
+            paraphrased_questions = this.paraphrasePipeline(question, **kwargs_paraphrase)
+            distractors: List = []
+            for pp_question in paraphrased_questions:
+                if pp_question != "<UNK>":
+                    distractors_current = []
+                    distractors_current.extend(this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer,
+                                                                                        question=pp_question, **kwargs)))
+                    distractors.extend(this._attach_metadata(distractors_current, pp_question))
+            distractors = this._attach_metadata(distractors, Metadata.DG.value)
+            distractors.extend(
+                this._attach_metadata(this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer, question=question, **kwargs)), Metadata.DG.value)
+            )
+            distractors.extend(this._attach_metadata(this._clean_distractors_all(this._generate_distractors_all(context=context, answer=answer, question=question, **kwargs)), Metadata.DAG.value))
 
         outputs, all_outputs = this.graders(answer, distractors)
         
         return outputs, all_outputs
+
 
     def _generate_distractors_all(this, context: str, answer: str, question: str, **kwargs) -> List:
         distractor_all_kwargs = kwargs.get("kwargs_distractor_all")
@@ -76,11 +92,8 @@ class GenerateDistractorsCombineWithAll():
                 cleaned.append(re.sub(pattern, "", distractor))
         return cleaned
 
-    def _attach_metadata(this, distractors: List[str], metadata_name: str, optional: str=None) -> List[str]:
+    def _attach_metadata(this, distractors: List[str], metadata_name: str) -> List[str]:
         result = []
         for distractor in distractors:
-            if optional is None:
-                result.append((distractor, metadata_name))
-            else:
-                result.append((distractor, metadata_name, optional))
+            result.append((distractor, metadata_name))
         return result

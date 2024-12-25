@@ -18,7 +18,7 @@ class Distractors_Grader():
 
     def __call__(this, correct_answer: str, distractors: List[str]):
         tout_ds = distractors
-        ds = this._distractors_candidate(correct_answer, ds)
+        ds = this._distractors_candidate(correct_answer, distractors)
         tout_ds = this._distractors_candidate(correct_answer, tout_ds, 0.0)
         return ds, tout_ds
 
@@ -63,16 +63,19 @@ class Distractors_Grader():
                             threshold: float =0.80,
                             ) -> bool:
 
-        cos_sim = ((this._calculate_cosine_similarity(correct_answer, distractor.strip()) + 1 ) / 2 )
+        cos_sim = this._calculate_cosine_similarity(correct_answer, distractor.strip())
 
         return cos_sim >= threshold, cos_sim
 
     def _distractors_candidate(this, correct_answer, distractors: List[Tuple[str, str]], threshold=0.80):
         result = []
         for d in distractors:
-            cond, score = this._distractor_similarity(d[0], correct_answer, threshold)
+            if len(d[0]) == 2:
+                cond, score = this._distractor_similarity(d[0][0], correct_answer, threshold)
+            else :
+                cond, score = this._distractor_similarity(d[0], correct_answer, threshold)
             if cond:
-                result.append((d, score))
+                result.append((d, float(score)))
         return sorted(result, reverse=True, key=lambda x : x[1])
     
 
