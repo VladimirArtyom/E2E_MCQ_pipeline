@@ -162,7 +162,7 @@ if __name__ == "__main__":
         "kwargs_distractor_1": DG_1_KWARGS,
         "kwargs_paraphrase": PARAPHRASE_KWARGS
     }
-    path = "./mcq/mcq_file/question_test.json"
+    path = "./mcq/mcq_file/questions.json"
     if ExperimentState.QG_DG.value == args.experiment_type:
         execute_(path, ExperimentQG.QG_ONLY.value, ExperimentDG.DG_ONLY.value, mcq, "QG_DG.json", "QG_DG_RAW.json", **kwargs) 
 
