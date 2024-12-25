@@ -60,7 +60,6 @@ PARAPHRASE_KWARGS: Mapping[str, Any] = {
         "repetition_penalty":1.2,
         "temperature": 1.8,
         "max_length": 256,
-        "no_repeat_ngram_size": 3,
         "early_stopping":True,
         "do_sample": True
 }
