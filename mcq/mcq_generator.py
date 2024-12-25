@@ -1,9 +1,9 @@
-from mcq.mcq_distractor_generator import GenerateDistractorsCombineWithAllNoParaphrase
+from mcq.mcq_distractor_generator import GenerateDistractorsCombineWithAll
 from mcq.mcq_qap_generator import GenerateQuestionAnswerPairs
 class MCQ_Generator():
     def __init__(this,
                  qg_generator: GenerateQuestionAnswerPairs,
-                 dg_generator: GenerateDistractorsCombineWithAllNoParaphrase,
+                 dg_generator: GenerateDistractorsCombineWithAll,
                  ):
         this.qg_generator = qg_generator
         this.dg_generator = dg_generator

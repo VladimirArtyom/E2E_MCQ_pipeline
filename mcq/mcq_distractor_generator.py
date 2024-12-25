@@ -1,22 +1,24 @@
 from .components.paraphrase_question import ParaphraseQuestion
 from .components.distractor_generator import DistractorGenerator
 from .components.pipelines import GenerationPipeline
-from .components.distractor_filters import Distractors_Filter
+from .components.distractor_graders import Distractors_Grader
 from .components.enums import *
 from typing import List
 
 import re
 
-class GenerateDistractorsCombineWithAllNoParaphrase():
+class GenerateDistractorsCombineWithAll():
     def __init__(
         this,
         distractorPipeline: GenerationPipeline,
         distractorAllPipeline: GenerationPipeline,
-        distractor_filters: Distractors_Filter,
+        distractor_grader: Distractors_Grader,
+        paraphrasePipeline: ParaphraseQuestion
     ):
         this.distractorGenerator: DistractorGenerator = distractorPipeline
         this.distractorAllGenerator: DistractorGenerator = distractorAllPipeline
-        this.filters = distractor_filters
+        this.paraphrasePipeline: ParaphraseQuestion = paraphrasePipeline
+        this.graders = distractor_grader
 
     def __call__(this, context: str, question: str, answer: str, experiment_type: str, n: int=10, **kwargs):
         if experiment_type == ExperimentDG.DAG_ONLY.value:
@@ -24,16 +26,21 @@ class GenerateDistractorsCombineWithAllNoParaphrase():
                                                                                            question=question, **kwargs))
             distractors = this._attach_metadata(distractors, Metadata.DAG.value)
         elif experiment_type == ExperimentDG.DG_ONLY.value:
-            distractors: List = this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer,
-                                                                                      question=question, **kwargs))
-            distractors = this._attach_metadata(distractors, Metadata.DG.value)
+            kwargs_paraphrase = kwargs.get("kwargs_paraphrase")
+            paraphrased_questions = this.paraphrasePipeline(question, **kwargs_paraphrase)
+            distractors: List = []
+            for pp_question in paraphrased_questions:
+                if pp_question != "<UNK>":
+                    distractors.extend(this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer,
+                                                                                        question=pp_question, **kwargs)))
+                    distractors = this._attach_metadata(distractors, Metadata.DG.value, pp_question)
         else:
             distractors: List = this._attach_metadata(this._clean_distractors_all(this._generate_distractors_all(context=context, answer=answer, question=question, **kwargs)), Metadata.DAG.value)
             distractors.extend(
                 this._attach_metadata(this._clean_distractors_1(this._generate_distractor_1(context=context, answer=answer, question=question, **kwargs)), Metadata.DG.value)
             )
 
-        outputs, all_outputs = this.filters(answer, distractors)
+        outputs, all_outputs = this.graders(answer, distractors)
         
         return outputs, all_outputs
 
@@ -69,8 +76,11 @@ class GenerateDistractorsCombineWithAllNoParaphrase():
                 cleaned.append(re.sub(pattern, "", distractor))
         return cleaned
 
-    def _attach_metadata(this, distractors: List[str], metadata_name: str) -> List[str]:
+    def _attach_metadata(this, distractors: List[str], metadata_name: str, optional: str=None) -> List[str]:
         result = []
         for distractor in distractors:
-            result.append((distractor, metadata_name))
+            if optional is None:
+                result.append((distractor, metadata_name))
+            else:
+                result.append((distractor, metadata_name, optional))
         return result

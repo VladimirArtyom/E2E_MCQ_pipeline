@@ -1,7 +1,8 @@
 from argparse import Namespace, ArgumentParser
-from mcq.mcq_distractor_generator import GenerateDistractorsCombineWithAllNoParaphrase
+from mcq.mcq_distractor_generator import GenerateDistractorsCombineWithAll
 from mcq.mcq_qap_generator import GenerateQuestionAnswerPairs
-from mcq.components.distractor_filters import Distractors_Filter
+from mcq.components.distractor_graders import Distractors_Grader
+from mcq.components.paraphrase_question import ParaphraseQuestion
 from mcq.components.question_generator import QuestionGenerator
 from mcq.components.distractor_generator import DistractorGenerator
 from mcq.components.BERT_NER_extractor import NER_extractor
@@ -33,6 +34,7 @@ def parse_argument() -> Namespace:
     args.add_argument("--ner_path_base", type=str, default="cahya/bert-base-indonesian-NER")
     args.add_argument("--qg_path_base", type=str, default="VosLannack/QG_ID_Generator_t5_base")
     args.add_argument("--dg_path_base", type=str, default="VosLannack/Distractors_all_base")
+    args.add_argument("--paraphrase_path_base", type=str, default="Wikidepia/IndoT5-base-paraphrase")
     args.add_argument("--qae_path", type=str, default="VosLannack/QAG_ID_Evaluator")
     args.add_argument("--dg_1_path_base", type=str, default="VosLannack/Distractor_1_base_cc")
     args.add_argument("--experiment_type",
@@ -87,6 +89,9 @@ if __name__ == "__main__":
     ner_tokenizer = BertTokenizer.from_pretrained(args.ner_path_base)
     ner = NER_extractor(ner_model, ner_tokenizer)
 
+    paraphrase_model = T5ForConditionalGeneration.from_pretrained(args.paraphrase_path_base, use_auth_token=token).to(args.device)
+    paraphrase_tokenizer = T5Tokenizer.from_pretrained(args.paraphrase_path_base, use_auth_token=token)
+
     qag_pipeline = QuestionAnswerGenerator(qag_model,
                                             qag_tokenizer,
                                             device=args.device,
@@ -129,13 +134,22 @@ if __name__ == "__main__":
         args.device
     )
 
-    ds = Distractors_Filter("./embeddings/500k_embeddings.pkl")
+    paraphrasePipeline = ParaphraseQuestion(
+        model=paraphrase_model,
+        tokenizer=paraphrase_tokenizer,
+        max_length=512,
+        device=args.device
+    )
 
-    DG_generator = GenerateDistractorsCombineWithAllNoParaphrase(
+    ds = Distractors_Grader("./embeddings/500k_embeddings.pkl")
+
+    DG_generator = GenerateDistractorsCombineWithAll(
         distractorPipeline=dg_1_pipeline,
         distractorAllPipeline=dg_all_pipeline,
         distractor_filters=ds,
+        paraphrasePipeline=paraphrasePipeline
     )
+
     mcq = MCQ_Generator(
         QG_generator,
         DG_generator

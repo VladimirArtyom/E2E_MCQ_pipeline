@@ -31,7 +31,7 @@ DG_1_KWARGS: Mapping[str, Any] = {
     "top_k": 130,
     "temperature": 1.2,
     "max_length": 512,
-    "num_return_sequences": 10,
+    "num_return_sequences": 3,
     "repetition_penalty": 1.5,
     "no_repeat_ngram_size": 2,
     "do_sample": True,

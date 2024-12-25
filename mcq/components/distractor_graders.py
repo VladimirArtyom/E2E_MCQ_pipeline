@@ -7,23 +7,19 @@ import Levenshtein
 import pickle
 
 from sklearn.metrics.pairwise import cosine_similarity
-from typing import List, Tuple, Set
-from scipy.spatial.distance import jensenshannon
-from string import punctuation
+from typing import List, Tuple
 import numpy as np
 import Levenshtein
 import pickle
-import json
 
-class Distractors_Filter():
+class Distractors_Grader():
     def __init__(this, embedding_path):
         this.embedding_model = this._load_embedding(embedding_path)
 
     def __call__(this, correct_answer: str, distractors: List[str]):
         tout_ds = distractors
-        ds = this._length_filter(correct_answer, distractors)
-        ds = this._distractors_candidate_filter(correct_answer, ds)
-        tout_ds = this._distractors_candidate_filter(correct_answer, tout_ds, 0.0)
+        ds = this._distractors_candidate(correct_answer, ds)
+        tout_ds = this._distractors_candidate(correct_answer, tout_ds, 0.0)
         return ds, tout_ds
 
     def _load_embedding(this, model_path: str):
@@ -71,12 +67,7 @@ class Distractors_Filter():
 
         return cos_sim >= threshold, cos_sim
 
-    def _length_filter(this, correct_answer, distractors: List[Tuple[str, str]], max_length_diff=3):
-        correct_len = len(correct_answer.split())
-        filtered_distractor =  [d for d in distractors if abs(len(d[0].split()) - correct_len) <= max_length_diff and d[0] != ""]
-        return filtered_distractor
-
-    def _distractors_candidate_filter(this, correct_answer, distractors: List[Tuple[str, str]], threshold=0.80):
+    def _distractors_candidate(this, correct_answer, distractors: List[Tuple[str, str]], threshold=0.80):
         result = []
         for d in distractors:
             cond, score = this._distractor_similarity(d[0], correct_answer, threshold)
