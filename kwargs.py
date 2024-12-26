@@ -31,7 +31,7 @@ DG_1_KWARGS: Mapping[str, Any] = {
     "top_k": 130,
     "temperature": 1.2,
     "max_length": 512,
-    "num_return_sequences": 3,
+    "num_return_sequences": 1,
     "repetition_penalty": 1.5,
     "no_repeat_ngram_size": 2,
     "do_sample": True,
@@ -53,10 +53,10 @@ DG_ALL_KWARGS: Mapping[str, Any] = {
 
 
 PARAPHRASE_KWARGS: Mapping[str, Any] = {
-        "num_beams": 3,
+        "num_beams": 10,
         "top_p": 0.98,
         "top_k": 120,
-        "num_return_sequences":5,
+        "num_return_sequences":10,
         "repetition_penalty":1.2,
         "temperature": 1.8,
         "max_length": 256,
