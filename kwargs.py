@@ -53,10 +53,10 @@ DG_ALL_KWARGS: Mapping[str, Any] = {
 
 
 PARAPHRASE_KWARGS: Mapping[str, Any] = {
-        "num_beams": 10,
+        "num_beams": 3,
         "top_p": 0.98,
         "top_k": 120,
-        "num_return_sequences":10,
+        "num_return_sequences":5,
         "repetition_penalty":1.2,
         "temperature": 1.8,
         "max_length": 256,
