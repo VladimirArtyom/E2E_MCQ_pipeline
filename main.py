@@ -137,7 +137,7 @@ if __name__ == "__main__":
     paraphrasePipeline = ParaphraseQuestion(
         model=paraphrase_model,
         tokenizer=paraphrase_tokenizer,
-        max_length=512,
+        max_length=256,
         device=args.device
     )
 
